@@ -72,7 +72,7 @@ public class InterfazCliente {
 
     public InterfazCliente(Tablero tablero) {
         this.tablero = tablero;
-        cliente = new Cliente(this);
+        cliente = new Cliente();
         configurarComponentesInterfazClientes(cliente.getNombre());
         configurarTablero(tablero);
         cargarImagenesCeldas();
