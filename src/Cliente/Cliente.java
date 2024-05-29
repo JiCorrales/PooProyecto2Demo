@@ -3,12 +3,22 @@ package Cliente;
 import Modelos.Barco.Barco;
 import Modelos.Mensaje;
 
+import java.io.DataOutputStream;
+import java.io.ObjectOutputStream;
+
 public class Cliente {
     private String nombre;
-    private String ip;
+    private final String ip = "localhost";
+    private final int puerto = getPuerto();
+    private DataOutputStream salidaDatos;
+
+
     private Mensaje mensaje;
-    public String salida;
+    public ObjectOutputStream salida;
     public Barco barco;
+
+
+    //Métodos
     public String getNombre() {
         return nombre;
     }
@@ -19,5 +29,8 @@ public class Cliente {
 
     public Barco getBarco() {
         return barco;
+    }
+    private int getPuerto() {
+        return puerto;
     }
 }

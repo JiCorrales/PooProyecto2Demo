@@ -56,7 +56,7 @@ public class InterfazServidor {
         configurarComponentesInterfazServidor();
         configurarTableroInterfaz(tablero);
         cargarImagenesCeldas();
-        servidor = new Servidor();
+        configurarCeldasInterfaz(tablero);
     }
 
     public static void main(String[] args) {
