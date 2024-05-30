@@ -72,7 +72,7 @@ public class InterfazCliente {
 
     public InterfazCliente(Tablero tablero) {
         this.tablero = tablero;
-        cliente = new Cliente();
+        cliente = new Cliente(this);
         configurarComponentesInterfazClientes(cliente.getNombre());
         configurarTablero(tablero);
         cargarImagenesCeldas();
@@ -457,7 +457,6 @@ public class InterfazCliente {
 
         jLayeredPane.add(panelBoton, JLayeredPane.MODAL_LAYER);
     }
-
 
     public void crearBotonesMovimiento() {
         final int[] turnosRestantes = {3};

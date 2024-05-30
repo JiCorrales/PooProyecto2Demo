@@ -27,44 +27,50 @@ public class ThreadCliente extends Thread {
             this.socket = socket;
             this.cliente = cliente;
             entrada = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException ex) {}
+        } catch (IOException ex) {
+        }
     }
 
     public void run() {
         while (isRunning) {
             try {
                 Object receivedObject = entrada.readObject();
-                
                 if (receivedObject instanceof Mensaje) {
-                    Mensaje mensaje = (Mensaje) receivedObject;
-                    cliente.getInterfazCliente().write(mensaje.toString());
-                    switch (mensaje.getMensaje().trim()) {
-                        case "¡Ha iniciado la partida!":
-                            cliente.getInterfazCliente().agregarPanelInformacionBarco(cliente);
-                            break;
-                        case "Es tu turno":
-                            cliente.getInterfazCliente().crearBotonesMovimiento();
-                            break;
-                        default:
-                            break;
-                    }
+                    recibeMensaje(receivedObject);
                 } else if (receivedObject instanceof Tablero) {
-                    Tablero tablero = (Tablero) receivedObject;
-                    cliente.crearBarco(cliente.getInterfazCliente(), tablero);
-                    cliente.getInterfazCliente().crearBotones();
-                    cliente.getInterfazCliente().crearBotonMostrarOcultar(tablero);
-                     for (int i = 0; i < tablero.getTableroMapa().length; i++) {
-                        for (int j = 0; j < tablero.getTableroMapa()[0].length; j++) {
-                            if (tablero.getTableroMapa()[i][j] instanceof Mercado){
-                                cliente.getInterfazCliente().mostrarCelda(i, j, tablero.getTableroMapa()[i][j]);
-                                tablero.getTableroMapa()[i][j].setCeldaVisible(true);
-                            }
-                        }
-                    }
+                    recibeTablero(receivedObject);
                 }
 
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    public void recibeMensaje(Object receivedObject){
+        Mensaje mensaje = (Mensaje) receivedObject;
+        cliente.getInterfazCliente().write(mensaje.toString());
+        switch (mensaje.getMensaje().trim()) {
+            case "¡Ha iniciado la partida!":
+                cliente.getInterfazCliente().agregarPanelInformacionBarco(cliente);
+                break;
+            case "Es tu turno":
+                cliente.getInterfazCliente().crearBotonesMovimiento();
+                break;
+            default:
+                break;
+        }
+    }
+    public void recibeTablero(Object receivedObject) {
+        Tablero tablero = (Tablero) receivedObject;
+        cliente.crearBarco(cliente.getInterfazCliente(), tablero);
+        cliente.getInterfazCliente().crearBotones();
+        cliente.getInterfazCliente().crearBotonMostrarOcultar(tablero);
+        for (int i = 0; i < tablero.getTableroMapa().length; i++) {
+            for (int j = 0; j < tablero.getTableroMapa()[0].length; j++) {
+                if (tablero.getTableroMapa()[i][j] instanceof Mercado) {
+                    cliente.getInterfazCliente().mostrarCelda(i, j, tablero.getTableroMapa()[i][j]);
+                    tablero.getTableroMapa()[i][j].setCeldaVisible(true);
+                }
             }
         }
     }

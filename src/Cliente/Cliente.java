@@ -31,6 +31,7 @@ public class Cliente {
         conectar();
     }
 
+
     public synchronized void conectar() {
         try {
             socket = new Socket(IP, PUERTO);
@@ -116,4 +117,7 @@ public class Cliente {
     public String getNombre() {
         return nombre;
     }
+
+    //Quiero una funcion que me sume un entero y un double y me retorne el valor de la suma
+    
 }
