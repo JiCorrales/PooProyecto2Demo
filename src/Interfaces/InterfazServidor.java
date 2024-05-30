@@ -23,12 +23,7 @@ import Modelos.Tablero.CeldaVacia;
 import Modelos.Tablero.Mercado;
 import Servidor.Servidor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -50,13 +45,15 @@ public class InterfazServidor {
     private ImageIcon fondoCeldaTesoroTableroScaledIcon;
     private ImageIcon fondoCeldaAmenazaTableroScaledIcon;
     private ImageIcon fondoCeldaMercadoTableroScaledIcon;
-
+    private TextArea chat;
     public InterfazServidor(Tablero tablero) {
         this.tablero = tablero;
         configurarComponentesInterfazServidor();
         configurarTableroInterfaz(tablero);
         cargarImagenesCeldas();
         configurarCeldasInterfaz(tablero);
+        servidor = new Servidor(this);
+
     }
 
     public static void main(String[] args) {
@@ -208,5 +205,8 @@ public class InterfazServidor {
 
     public JFrame getPantallaServidor() {
         return pantallaServidor;
+    }
+    public void write(String text){
+        this.historialChat.setText(text);
     }
 }

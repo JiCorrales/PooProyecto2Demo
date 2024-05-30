@@ -17,7 +17,7 @@ import Modelos.Tablero.Tablero;
 
 public class Cliente {
     private final String IP = "localhost";
-    private final int PUERTO = 8089;
+    private final int PUERTO = 8084;
     private Socket socket;
     private DataOutputStream salidaDatos;
     private InterfazCliente interfazCliente;
@@ -35,13 +35,20 @@ public class Cliente {
     public synchronized void conectar() {
         try {
             socket = new Socket(IP, PUERTO);
+            System.out.println("Conectado al servidor");
             salida = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("Salida creada");
             salidaDatos = new DataOutputStream(socket.getOutputStream());
+            System.out.println("Salida de datos creada");
             threadCliente = new ThreadCliente(socket, this);
+            System.out.println("Thread cliente creado");
             threadCliente.start();
+            System.out.println("Thread cliente iniciado");
             // Pedir el nombre
             this.nombre = JOptionPane.showInputDialog("Nombre:");
+
             salidaDatos.writeUTF(this.nombre);
+            System.out.println("Nombre enviado");
         } catch (IOException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al conectar con el servidor. Se debería de iniciar el servidor antes de iniciar con el cliente.");
@@ -118,6 +125,6 @@ public class Cliente {
         return nombre;
     }
 
-    //Quiero una funcion que me sume un entero y un double y me retorne el valor de la suma
-    
+
+
 }

@@ -3,6 +3,7 @@ package Servidor;
 import Modelos.Mensaje;
 import Servidor.Servidor;
 
+import java.awt.*;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,41 +33,40 @@ public class ThreadServidor extends Thread{
 
     @Override
     public void run() {
-        Mensaje mensaje;
+        Object receivedObject;
 
         try {
+
             this.nombre = entradaDatos.readUTF();
+            server.pantallaServidor.write("Recibido el nombre: " + nombre);
+//            server.sendCasilla(server.pantalla.casillas);
+
+
         } catch (IOException ex) {
 
         }
-
         while(isRunning){
-//            try {
-                //TODO Handle the sent message
-                System.out.println("Esperando mensaje..."   );
+            try {
+                receivedObject = entrada.readObject();
+                if(receivedObject instanceof Mensaje){
+                    Mensaje mensaje = (Mensaje) receivedObject;
+                    server.pantallaServidor.write("Recibido:" + mensaje);
+                    server.broadcast(mensaje);
 
-//                mensaje = (Mensaje) entrada.readObject();
-//                if (mensaje.getTipo().equals("PUBLICO")){
-//                    server.pantalla.write("Recibido:" + mensaje);
-//                    server.broadcast(mensaje);
-//                }else if (mensaje.getTipo().equals("PRIVADO")){
-//                    server.pantalla.write("Recibido:" + mensaje);
-//                    server.sendPrivateMessage(mensaje);
-//                }else if (mensaje.getTipo().equals("COORDENADA")){
-//                    server.pantalla.write("Recibido:" + mensaje);
-//                    server.sendPrivateMessage(mensaje);
-//                }
+                }/*else if (receivedObject instanceof Casilla){
+                    Casilla casilla = (Casilla) receivedObject;
+                    int x = casilla.getX();
+                    int y = casilla.getY();
+                    server.pantalla.casillas[x][y].setTieneBarco(true);
+                    server.pantalla.tableroBtns[x][y].setBackground(Color.blue);
+                }*/
 
 
-                //TODO
-                // si es privado enviarlo solo al thread servidor de esa persons
-                // si es publico
+            } catch (IOException | ClassNotFoundException ex) {
+                //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
 
-//            } catch (IOException ex) {
-//                //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (ClassNotFoundException ex) {
-//                //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
-//            }
 
 
         }

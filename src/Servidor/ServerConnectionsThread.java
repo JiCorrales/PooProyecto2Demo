@@ -16,18 +16,19 @@ public class ServerConnectionsThread extends Thread{
 
     public void run(){
         while (isRunning) {
-//            try {
-                //TODO Handle the new client
-                System.out.println("Esperando nuevo cliente...");
-//                server.pantalla.write("Esperando nuevo cliente...");
-//                Socket nuevoSocket = server.serverSocket.accept();
-//                ThreadServidor ts = new ThreadServidor(nuevoSocket, server);
-//                ts.start();
-//                server.clientesConectados.add(ts);
-//                server.pantalla.write("Cliente " + server.clientesConectados.size() + " aceptado");
-//            } catch (IOException ex) {
-//                //Logger.getLogger(ServerConnectionsThread.class.getName()).log(Level.SEVERE, null, ex);
-//            }
+            try {
+                server.pantallaServidor.write("Esperando nuevo cliente...");
+                Socket nuevoSocket = server.serverSocket.accept();
+                ThreadServidor ts = new ThreadServidor(nuevoSocket, server);
+                ts.start();
+                server.clientesConectados.add(ts);
+                server.pantallaServidor.write("Cliente " + server.clientesConectados.size() + " aceptado");
+                if (server.clientesConectados.size() == 4){
+                    isRunning = false;
+                }
+            } catch (IOException ex) {
+                //Logger.getLogger(ServerConnectionsThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
 
         }
