@@ -69,10 +69,14 @@ public class InterfazCliente {
     private ImageIcon fondoCeldaAmenazaTableroScaledIcon;
     private ImageIcon fondoCeldaMercadoTableroScaledIcon;
     private ImageIcon barcoTableroScaledIcon;
+    private JLabel oroLabel = new JLabel();
+    private JLabel vidaLabel = new JLabel();
 
     public InterfazCliente(Tablero tablero) {
         this.tablero = tablero;
+
         cliente = new Cliente(this);
+
         configurarComponentesInterfazClientes(cliente.getNombre());
         configurarTablero(tablero);
         cargarImagenesCeldas();
@@ -319,9 +323,8 @@ public class InterfazCliente {
     public void write(String text) {
         historialChat.setText(historialChat.getText() + text + "\n");
     }
-
     public void setVida(int valor) {
-        JLabel vidaLabel = new JLabel("Vida: " + valor);
+        vidaLabel.setText("Vida: " + valor);
         vidaLabel.setForeground(Color.WHITE);
         vidaLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ImageIcon corazonIcono = new ImageIcon("src\\Modelos\\Barco\\corazonIcono.png");
@@ -331,7 +334,7 @@ public class InterfazCliente {
     }
 
     public void setOro(int valor) {
-        JLabel oroLabel = new JLabel("Oro: " + valor);
+        oroLabel.setText("Oro: " + valor);
         oroLabel.setForeground(Color.WHITE);
         oroLabel.setFont(new Font("Arial", Font.BOLD, 14));
         ImageIcon oroIcono = new ImageIcon("src\\Modelos\\Barco\\oroIcono.png");
@@ -339,7 +342,14 @@ public class InterfazCliente {
         oroLabel.setIcon(new ImageIcon(oroImage));
         agregarPanelInformacion(oroLabel, 10, 230);
     }
+    // quiero hacer un metodo en el que se muestre una pantalla
+    // con las opciones de compra de balas y radares
+    // que se muestre las imagenes de los items y el precio
+    // que se pueda seleccionar la cantidad de items a comprar
+    // que se pueda comprar y se actualice el inventario
+    public void mostrarMercado(){
 
+    }
     public void setInventarioBalas(List<String> balas) {
         agregarPanelInventario(balas, "Inventario de Balas", 10, 340);
     }
@@ -421,7 +431,7 @@ public class InterfazCliente {
     }
 
     public void crearBotonMostrarOcultar(Tablero tablero) {
-        JButton botonMostrarOcultar = new JButton("Mostrar/Accion Celda");
+        JButton botonMostrarOcultar = new JButton("Interactuar Celda");
         botonMostrarOcultar.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonMostrarOcultar.addActionListener(e -> {
             mostrarCelda(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), tablero.getTableroMapa()[cliente.getBarco().getPosicionX()][cliente.getBarco().getPosicionY()]);
@@ -432,6 +442,8 @@ public class InterfazCliente {
                 Random random = new Random();
                 cliente.getBarco().setNivelSalud(cliente.getBarco().getNivelSalud() - random.nextInt(30));
                 setVida(cliente.getBarco().getNivelSalud());
+            } else if (tablero.getTableroMapa()[cliente.getBarco().getPosicionX()][cliente.getBarco().getPosicionY()] instanceof Mercado) {
+                mostrarPantallaCompra();
             }
         });
 
@@ -514,5 +526,26 @@ public class InterfazCliente {
         panelMovimiento.add(botonDerecha);
 
         jLayeredPane.add(panelMovimiento, JLayeredPane.MODAL_LAYER);
+    }
+
+    //En esta pantalla se tienen que mostrar los productos que se pueden comprar.
+    //O sea,
+    public void mostrarPantallaCompra() {
+        JFrame pantallaCompra = new JFrame("Compra de productos");
+        pantallaCompra.setSize(500, 500);
+        pantallaCompra.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pantallaCompra.setLocationRelativeTo(null);
+        JPanel panelCompra = new JPanel();
+        panelCompra.setLayout(new BoxLayout(panelCompra, BoxLayout.Y_AXIS));
+        panelCompra.setPreferredSize(new Dimension(500, 500));
+        panelCompra.setBounds(0, 0, 500, 500);
+        panelCompra.setBackground(Color.BLACK);
+        pantallaCompra.add(panelCompra);
+        pantallaCompra.setVisible(true);
+    }
+    //Mostrar los productos que se pueden comprar
+    //los tres tipos de balas y los tres tipos de radares.
+    public void agregarImagenesProductos(JFrame pantallaCompra){
+
     }
 }

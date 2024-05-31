@@ -90,6 +90,7 @@ public class InterfazServidor {
             @Override
             public void actionPerformed(ActionEvent e) {
                 servidor.iniciarPartida();
+
             }
         });
 
@@ -204,8 +205,5 @@ public class InterfazServidor {
 
     public JFrame getPantallaServidor() {
         return pantallaServidor;
-    }
-    public void write(String text){
-        this.historialChat.setText(text);
     }
 }

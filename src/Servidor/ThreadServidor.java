@@ -45,7 +45,7 @@ public class ThreadServidor extends Thread{
         try {
 
             this.nombre = entradaDatos.readUTF();
-            server.getInterfazServidor().write("Recibido el nombre: " + nombre);
+            server.getInterfazServidor().agregarAlHistorial("Recibido el nombre: " + nombre, Color.RED);
 //            server.sendCasilla(server.pantalla.casillas);
 
 
@@ -57,7 +57,7 @@ public class ThreadServidor extends Thread{
                 receivedObject = entrada.readObject();
                 if(receivedObject instanceof Mensaje){
                     Mensaje mensaje = (Mensaje) receivedObject;
-                    server.getInterfazServidor().write("Recibido:" + mensaje);
+                    server.getInterfazServidor().agregarAlHistorial("Recibido:" + mensaje, Color.BLACK);
                     server.enviarMensaje(mensaje);
 
                 }/*else if (receivedObject instanceof Casilla){

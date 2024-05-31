@@ -37,7 +37,7 @@ public class Servidor{
             System.out.println("Error al iniciar el servidor");   }
     }
 
-    public void iniciarPartida() {
+    public void iniciarPartida (){
         Tablero tablero = new Tablero();
         if (clientesConectados.size() >= 2 && clientesConectados.size() <= 4){
             if (turnosRestantes == 1){
