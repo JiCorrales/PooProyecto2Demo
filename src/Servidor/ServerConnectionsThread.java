@@ -1,9 +1,9 @@
 package Servidor;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class ServerConnectionsThread extends Thread{
@@ -17,20 +17,19 @@ public class ServerConnectionsThread extends Thread{
     public void run(){
         while (isRunning) {
             try {
-                server.pantallaServidor.write("Esperando nuevo cliente...");
-                Socket nuevoSocket = server.serverSocket.accept();
+                server.getInterfazServidor().agregarAlHistorial("Esperando nuevo cliente...", Color.RED);
+                Socket nuevoSocket = server.getServerSocket().accept();
                 ThreadServidor ts = new ThreadServidor(nuevoSocket, server);
                 ts.start();
-                server.clientesConectados.add(ts);
-                server.pantallaServidor.write("Cliente " + server.clientesConectados.size() + " aceptado");
-                if (server.clientesConectados.size() == 4){
+                server.getClientesConectados().add(ts);
+                server.getInterfazServidor().agregarAlHistorial("Cliente " + server.getClientesConectados().size() + " aceptado", Color.RED);
+                if (server.getClientesConectados().size() == 4){
                     isRunning = false;
+                    JOptionPane.showMessageDialog(null, "Se han conectado 4 jugadores, ya no se aceptarán más conexiones");
                 }
-            } catch (IOException ex) {
-                //Logger.getLogger(ServerConnectionsThread.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException _) {
+
             }
-
-
         }
     }
 

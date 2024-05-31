@@ -45,7 +45,6 @@ public class InterfazServidor {
     private ImageIcon fondoCeldaTesoroTableroScaledIcon;
     private ImageIcon fondoCeldaAmenazaTableroScaledIcon;
     private ImageIcon fondoCeldaMercadoTableroScaledIcon;
-    private TextArea chat;
     public InterfazServidor(Tablero tablero) {
         this.tablero = tablero;
         configurarComponentesInterfazServidor();

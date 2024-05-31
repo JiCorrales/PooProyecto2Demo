@@ -31,6 +31,13 @@ public class ThreadServidor extends Thread{
         }
     }
 
+    public void enviarMensaje(Mensaje mensaje){
+        try {
+            salida.writeObject(mensaje);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void run() {
         Object receivedObject;
@@ -38,7 +45,7 @@ public class ThreadServidor extends Thread{
         try {
 
             this.nombre = entradaDatos.readUTF();
-            server.pantallaServidor.write("Recibido el nombre: " + nombre);
+            server.getInterfazServidor().write("Recibido el nombre: " + nombre);
 //            server.sendCasilla(server.pantalla.casillas);
 
 
@@ -50,8 +57,8 @@ public class ThreadServidor extends Thread{
                 receivedObject = entrada.readObject();
                 if(receivedObject instanceof Mensaje){
                     Mensaje mensaje = (Mensaje) receivedObject;
-                    server.pantallaServidor.write("Recibido:" + mensaje);
-                    server.broadcast(mensaje);
+                    server.getInterfazServidor().write("Recibido:" + mensaje);
+                    server.enviarMensaje(mensaje);
 
                 }/*else if (receivedObject instanceof Casilla){
                     Casilla casilla = (Casilla) receivedObject;
@@ -63,6 +70,7 @@ public class ThreadServidor extends Thread{
 
 
             } catch (IOException | ClassNotFoundException ex) {
+
                 //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
             }
             //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
