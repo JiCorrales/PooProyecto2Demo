@@ -67,7 +67,9 @@ public class InterfazCliente {
     private ImageIcon barcoTableroScaledIcon;
     private JLabel oroLabel = new JLabel();
     private JLabel vidaLabel = new JLabel();
-
+    private JLabel lblBalasLong = new JLabel();
+    private JLabel lblBalasHeavy = new JLabel();
+    private JLabel lblBalasMine = new JLabel();
     public InterfazCliente(Tablero tablero) {
         this.tablero = tablero;
 
@@ -338,12 +340,7 @@ public class InterfazCliente {
         oroLabel.setIcon(new ImageIcon(oroImage));
         agregarPanelInformacion(oroLabel, 10, 230);
     }
-    // quiero hacer un metodo en el que se muestre una pantalla
-    // con las opciones de compra de balas y radares
-    // que se muestre las imagenes de los items y el precio
-    // que se pueda seleccionar la cantidad de items a comprar
-    // que se pueda comprar y se actualice el inventario
-    private JLabel lblBalasLong = new JLabel();
+
     public void setBalasLong(int valor){
         lblBalasLong.setText("Balas Long: " + valor);
         lblBalasLong.setForeground(Color.WHITE);
@@ -353,7 +350,7 @@ public class InterfazCliente {
         lblBalasLong.setIcon(new ImageIcon(balaImage));
         agregarPanelInformacion(lblBalasLong, 10, 340);
     }
-    private JLabel lblBalasHeavy = new JLabel();
+
     public void setBalasHeavy(int valor){
         lblBalasHeavy.setText("Balas Heavy: " + valor);
         lblBalasHeavy.setForeground(Color.WHITE);
@@ -363,7 +360,7 @@ public class InterfazCliente {
         lblBalasHeavy.setIcon(new ImageIcon(balaImage));
         agregarPanelInformacion(lblBalasHeavy, 10, 370);
     }
-    private JLabel lblBalasMine = new JLabel();
+
     public void setBalasMine(int valor){
         lblBalasMine.setText("Balas Mine: " + valor);
         lblBalasMine.setForeground(Color.WHITE);
