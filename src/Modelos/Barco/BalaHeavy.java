@@ -28,7 +28,10 @@ public class BalaHeavy implements Bala, Serializable {
     public int getCostoBala() {
         return costoBala;
     }
-
+    @Override
+    public String toString() {
+        return "Bala Heavy";
+    }
 
     @Override
     public void atacar() {

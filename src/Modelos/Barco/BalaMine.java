@@ -26,7 +26,10 @@ public class BalaMine implements Bala, Serializable {
     public int getCostoBala() {
         return costoBala;
     }
-
+    @Override
+    public String toString() {
+        return "Bala Mine";
+    }
     @Override
     public void atacar() {
         // TODO Auto-generated method stub

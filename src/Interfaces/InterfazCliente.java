@@ -1,47 +1,23 @@
 package Interfaces;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 
 import Cliente.Cliente;
+import Modelos.Barco.BalaTipo;
 import Modelos.Mensaje;
-import Modelos.Tablero.Tablero;
-import Modelos.Tablero.Celda;
-import Modelos.Tablero.CeldaAmenaza;
-import Modelos.Tablero.CeldaTesoro;
-import Modelos.Tablero.CeldaVacia;
-import Modelos.Tablero.Mercado;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import Modelos.Tablero.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+
 
 public class InterfazCliente {
 
@@ -70,6 +46,11 @@ public class InterfazCliente {
     private JLabel lblBalasLong = new JLabel();
     private JLabel lblBalasHeavy = new JLabel();
     private JLabel lblBalasMine = new JLabel();
+    private JLabel lblRadarCorto = new JLabel();
+    private JLabel lblRadarMedio = new JLabel();
+    private JLabel lblRadarLargo = new JLabel();
+    private JPanel panelMercado = new JPanel();
+    JButton botonAtacar = new JButton("Atacar");
     public InterfazCliente(Tablero tablero) {
         this.tablero = tablero;
 
@@ -273,13 +254,17 @@ public class InterfazCliente {
     }
 
     public void moverBarcoCelda(int x, int y) {
+        // Mover el barco a la nueva celda
         int indexNuevo = x * tablero.getTableroMapa()[0].length + y;
+        // Obtener el panel de la nueva celda
         JPanel cuadroNuevo = (JPanel) tableroMatriz.getComponent(indexNuevo);
-
+        // Si la celda está ocupada, no se puede mover el barco
         if (posicionAnteriorX != -1 && posicionAnteriorY != -1) {
-            int indexAnterior = posicionAnteriorX * tablero.getTableroMapa()[0].length + posicionAnteriorY;
-            JPanel cuadroAnterior = (JPanel) tableroMatriz.getComponent(indexAnterior);
 
+            int indexAnterior = posicionAnteriorX * tablero.getTableroMapa()[0].length + posicionAnteriorY;
+            // Obtener el panel de la celda anterior
+            JPanel cuadroAnterior = (JPanel) tableroMatriz.getComponent(indexAnterior);
+            // Remover el barco de la celda anterior
             for (Component componente : cuadroAnterior.getComponents()) {
                 if (componente instanceof JLabel) {
                     Icon icono = ((JLabel) componente).getIcon();
@@ -370,12 +355,83 @@ public class InterfazCliente {
         lblBalasMine.setIcon(new ImageIcon(balaImage));
         agregarPanelInformacion(lblBalasMine, 10, 400);
     }
-    public void mostrarMercado(){
 
+    public void mostrarMercado() {
+        JFrame mercadoFrame = new JFrame("Mercado");
+        mercadoFrame.setSize(400, 400);
+        mercadoFrame.setLocationRelativeTo(null);
+
+        JPanel panelMercado = new JPanel(new GridBagLayout());
+        panelMercado.setPreferredSize(new Dimension(250, 350));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // Padding
+
+        // Display player's gold
+        JLabel oroLabel = new JLabel("Oro: " + cliente.getBarco().getOroDisponible());
+        oroLabel.setForeground(Color.BLACK);
+        oroLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        panelMercado.add(oroLabel, gbc);
+
+        // Reset grid width
+        gbc.gridwidth = 1;
+
+        // Display products and their prices
+        ArrayList<BalaTipo> productos = new ArrayList<>(Arrays.asList(BalaTipo.LONG, BalaTipo.HEAVY, BalaTipo.MINE));
+        String[] productosStrings = {BalaTipo.LONG.toString(), BalaTipo.HEAVY.toString(),
+                              BalaTipo.MINE.toString(), "Radar Corto", "Radar Medio", "Radar Largo"};
+        int[] precios = {100, 200, 300, 400, 500, 600}; // Example prices
+
+        for (int i = 0; i < productosStrings.length; i++) {
+            String producto = productosStrings[i];
+            int precio = precios[i];
+
+            JLabel productoLabel = new JLabel(producto + ": " + precio + " oro");
+            productoLabel.setForeground(Color.BLACK);
+            productoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            gbc.gridx = 0;
+            gbc.gridy = i + 1;
+            gbc.anchor = GridBagConstraints.WEST;
+            panelMercado.add(productoLabel, gbc);
+
+            JButton comprarButton = getComprarButton(productos, producto,precio, mercadoFrame);
+            gbc.gridx = 1;
+            gbc.gridy = i + 1;
+            gbc.anchor = GridBagConstraints.EAST;
+            panelMercado.add(comprarButton, gbc);
+        }
+
+        mercadoFrame.add(panelMercado);
+        mercadoFrame.setVisible(true);
     }
-    public void setInventarioBalas(List<String> balas) {
-        agregarPanelInventario(balas, "Inventario de Balas", 10, 340);
-    }
+
+//    private JButton getComprarButton(ArrayList<BalaTipo> productos,String producto, int precio, JFrame mercadoFrame) {
+//        JButton comprarButton = new JButton("Comprar " + producto);
+//        comprarButton.addActionListener(e -> {
+//            if (cliente.getBarco().getOroDisponible() >= precio) {
+//                cliente.getBarco().setOroDisponible(cliente.getBarco().getOroDisponible() - precio);
+//                setOro(cliente.getBarco().getOroDisponible());
+//                switch (productos){
+//                    case BalaTipo.LONG:
+//                        cliente.getBarco().getInventarioBalasCanon().add(new BalaLong());
+//                        break;
+//                    case BalaTipo.HEAVY:
+//                        cliente.getBarco().getInventarioBalasCanon().add(new BalaHeavy());
+//                        break;
+//                    case BalaTipo.MINE:
+//                        cliente.getBarco().getInventarioBalasCanon().add(new BalaMine());
+//                        break;
+//
+//                }
+//            } else {
+//                JOptionPane.showMessageDialog(mercadoFrame, "No tienes suficiente oro para comprar " + producto, "Mercado", JOptionPane.INFORMATION_MESSAGE);
+//            }
+//        });
+//        return comprarButton;
+//    }
 
     public void setInventarioRadares(List<String> radares) {
         agregarPanelInventario(radares, "Inventario de Radares", 10, 450);
@@ -467,7 +523,7 @@ public class InterfazCliente {
                 cliente.getBarco().setNivelSalud(cliente.getBarco().getNivelSalud() - random.nextInt(30));
                 setVida(cliente.getBarco().getNivelSalud());
             } else if (tablero.getTableroMapa()[cliente.getBarco().getPosicionX()][cliente.getBarco().getPosicionY()] instanceof Mercado) {
-                mostrarPantallaCompra();
+                mostrarMercado();
             }
         });
 
@@ -480,10 +536,8 @@ public class InterfazCliente {
     }
 
     private void crearBotonAtacar() {
-        JButton botonAtacar = new JButton("Atacar");
         botonAtacar.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonAtacar.addActionListener(e -> {
-
         });
 
         JPanel panelBoton = new JPanel();
@@ -554,19 +608,6 @@ public class InterfazCliente {
 
     //En esta pantalla se tienen que mostrar los productos que se pueden comprar.
     //O sea,
-    public void mostrarPantallaCompra() {
-        JFrame pantallaCompra = new JFrame("Compra de productos");
-        pantallaCompra.setSize(500, 500);
-        pantallaCompra.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pantallaCompra.setLocationRelativeTo(null);
-        JPanel panelCompra = new JPanel();
-        panelCompra.setLayout(new BoxLayout(panelCompra, BoxLayout.Y_AXIS));
-        panelCompra.setPreferredSize(new Dimension(500, 500));
-        panelCompra.setBounds(0, 0, 500, 500);
-        panelCompra.setBackground(Color.BLACK);
-        pantallaCompra.add(panelCompra);
-        pantallaCompra.setVisible(true);
-    }
     //Mostrar los productos que se pueden comprar
     //los tres tipos de balas y los tres tipos de radares.
     public void agregarImagenesProductos(JFrame pantallaCompra){
