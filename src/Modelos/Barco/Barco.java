@@ -1,5 +1,7 @@
 package Modelos.Barco;
 
+import Cliente.Cliente;
+
 import java.util.*;
 
 import java.io.Serializable;
@@ -88,5 +90,15 @@ public class Barco implements Serializable{
             }
         }
         return contador;
+    }
+    public void agregarBalaLong() {
+        inventarioBalasCanon.add(new BalaLong());
+    }
+
+    public void agregarBalaHeavy() {
+        inventarioBalasCanon.add(new BalaHeavy());
+    }
+    public void agregarBalaMine() {
+        inventarioBalasCanon.add(new BalaMine());
     }
 }

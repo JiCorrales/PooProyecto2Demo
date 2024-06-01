@@ -28,7 +28,7 @@ public class BalaLong implements Bala, Serializable {
     }
     @Override
     public String toString() {
-        return "Bala Long";
+        return "LONG";
     }
     @Override
     public void atacar() {

@@ -1,13 +1,10 @@
 package Interfaces;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
+
 import javax.swing.Icon;
 
 import Cliente.Cliente;
-import Modelos.Barco.BalaHeavy;
-import Modelos.Barco.BalaLong;
-import Modelos.Barco.BalaMine;
 import Modelos.Barco.BalaTipo;
 import Modelos.Mensaje;
 import Modelos.Tablero.*;
@@ -53,7 +50,7 @@ public class InterfazCliente {
     private JLabel lblRadarMedio = new JLabel();
     private JLabel lblRadarLargo = new JLabel();
     private JPanel panelMercado = new JPanel();
-    JButton botonAtacar = new JButton("Atacar");
+    JButton btnAtacar = new JButton("Atacar");
     public InterfazCliente(Tablero tablero) {
         this.tablero = tablero;
 
@@ -417,25 +414,26 @@ public class InterfazCliente {
             if (cliente.getBarco().getOroDisponible() >= precio) {
                 cliente.getBarco().setOroDisponible(cliente.getBarco().getOroDisponible() - precio);
                 setOro(cliente.getBarco().getOroDisponible());
-
-                for (BalaTipo tipo : productos) {
-                    switch (tipo) {
-                        case LONG:
-                            cliente.getBarco().getInventarioBalasCanon().add(new BalaLong());
-                            setBalasLong(cliente.getBarco().getBalasLong() + 1);
-                            break;
-                        case HEAVY:
-                            cliente.getBarco().getInventarioBalasCanon().add(new BalaHeavy());
-                            setBalasHeavy(cliente.getBarco().getBalasHeavy() + 1);
-                            break;
-                        case MINE:
-                            cliente.getBarco().getInventarioBalasCanon().add(new BalaMine());
-                            setBalasMine(cliente.getBarco().getBalasMine() + 1);
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Tipo de bala desconocido: " + tipo);
-                    }
+                if (comprarButton.getText().equals("Comprar "+ BalaTipo.LONG.toString())){
+                    cliente.getBarco().agregarBalaLong();
+                    setBalasLong(cliente.getBarco().getBalasLong());
+                } else if (comprarButton.getText().equals("Comprar "+ BalaTipo.HEAVY.toString())){
+                    cliente.getBarco().agregarBalaHeavy();
+                    setBalasHeavy(cliente.getBarco().getBalasHeavy());
+                } else if (comprarButton.getText().equals("Comprar "+ BalaTipo.MINE.toString())) {
+                    cliente.getBarco().agregarBalaMine();
+                    setBalasMine(cliente.getBarco().getBalasMine());
                 }
+//                } else if (comprarButton.getText().equals("Comprar Radar Corto")){
+//                    cliente.getBarco().getInventarioRadares().add("Radar Corto");
+//                    setInventarioRadares(cliente.getBarco().getInventarioRadares());
+//                } else if (comprarButton.getText().equals("Comprar Radar Medio")){
+//                    cliente.getBarco().getInventarioRadares().add("Radar Medio");
+//                    setInventarioRadares(cliente.getBarco().getInventarioRadares());
+//                } else if (comprarButton.getText().equals("Comprar Radar Largo")){
+//                    cliente.getBarco().getInventarioRadares().add("Radar Largo");
+//                    setInventarioRadares(cliente.getBarco().getInventarioRadares());
+//                }
             } else {
                 JOptionPane.showMessageDialog(mercadoFrame, "No tienes suficiente oro para comprar " + producto, "Mercado", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -519,12 +517,12 @@ public class InterfazCliente {
     public void crearBotones() {
         crearBotonAtacar();
     }
-    private         JButton botonMostrarOcultar = new JButton("Interactuar celda");
+    private JButton btnInteractuar = new JButton("Interactuar celda");
 
-    public void crearBotonMostrarOcultar(Tablero tablero) {
+    public void crearBotonInteractuar(Tablero tablero) {
 
-        botonMostrarOcultar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonMostrarOcultar.addActionListener(e -> {
+        btnInteractuar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnInteractuar.addActionListener(e -> {
             mostrarCelda(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), tablero.getTableroMapa()[cliente.getBarco().getPosicionX()][cliente.getBarco().getPosicionY()]);
             if (tablero.getTableroMapa()[cliente.getBarco().getPosicionX()][cliente.getBarco().getPosicionY()] instanceof CeldaTesoro){
                 cliente.getBarco().setOroDisponible(cliente.getBarco().getOroDisponible() + 500);
@@ -540,23 +538,82 @@ public class InterfazCliente {
 
         JPanel panelBoton = new JPanel();
         panelBoton.setLayout(new BorderLayout());
-        panelBoton.add(botonMostrarOcultar, BorderLayout.CENTER);
+        panelBoton.add(btnInteractuar, BorderLayout.CENTER);
         panelBoton.setBounds(950, 20, 150, 50);
 
         jLayeredPane.add(panelBoton, JLayeredPane.MODAL_LAYER);
     }
 
+    public void atacar (int x, int y, BalaTipo balaTipo){
+        btnAtacar.addActionListener(e -> {
+            if (balaTipo == BalaTipo.LONG){
+                cliente.getBarco().getInventarioBalasCanon().getFirst().atacar();
+            } else if (balaTipo == BalaTipo.HEAVY){
+                cliente.getBarco().getInventarioBalasCanon().get(1).atacar();
+            } else if (balaTipo == BalaTipo.MINE){
+                cliente.getBarco().getInventarioBalasCanon().get(2).atacar();
+            }
+        });
+    }
+    private JButton btnUseBala = new JButton("Usar Bala");
+    private JButton btnUseRadar = new JButton("Usar Radar");
     private void crearBotonAtacar() {
-        botonAtacar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonAtacar.addActionListener(e -> {
+        btnAtacar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Crear JComboBox para seleccionar el tipo de bala
+        String[] tiposBala = {"Bala Long", "Bala Heavy", "Bala Mine"};
+        JComboBox<String> comboBala = new JComboBox<>(tiposBala);
+
+        // Crear JComboBox para seleccionar el tipo de radar
+        String[] tiposRadar = {"Radar Corto", "Radar Medio", "Radar Largo"};
+        JComboBox<String> comboRadar = new JComboBox<>(tiposRadar);
+
+        // Panel para los JComboBox
+        JPanel panelSeleccion = new JPanel();
+        panelSeleccion.setLayout(new GridLayout(2, 2,   0, 0));
+        panelSeleccion.add(comboBala);
+        panelSeleccion.add(comboRadar);
+        panelSeleccion.add(btnUseBala);
+        panelSeleccion.add(btnUseRadar);
+
+        btnAtacar.addActionListener(e -> {
+            String balaSeleccionada = (String) comboBala.getSelectedItem();
+            String radarSeleccionado = (String) comboRadar.getSelectedItem();
+
+            BalaTipo balaTipo = obtenerBalaTipo(balaSeleccionada);
+            atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
+
+            // Lógica para radar seleccionado (si es necesario)
         });
 
+        // Panel para el botón de atacar
         JPanel panelBoton = new JPanel();
         panelBoton.setLayout(new BorderLayout());
-        panelBoton.add(botonAtacar, BorderLayout.CENTER);
-        panelBoton.setBounds(950, 80, 150, 50);
+        panelBoton.add(btnAtacar, BorderLayout.CENTER);
 
-        jLayeredPane.add(panelBoton, JLayeredPane.MODAL_LAYER);
+        // Panel contenedor para el botón y las selecciones
+        JPanel panelContenedor = new JPanel();
+        panelContenedor.setLayout(new BorderLayout());
+        panelContenedor.add(panelSeleccion, BorderLayout.CENTER);
+        panelContenedor.add(panelBoton, BorderLayout.SOUTH);
+        panelContenedor.setBounds(950, 80, 250, 150);
+
+        jLayeredPane.add(panelContenedor, JLayeredPane.MODAL_LAYER);
+    }
+
+
+    private BalaTipo obtenerBalaTipo(String balaSeleccionada) {
+        // Aquí debes implementar la lógica para convertir el string a tu enumeración o clase BalaTipo
+        switch (balaSeleccionada) {
+            case "Bala Long":
+                return BalaTipo.LONG;
+            case "Bala Heavy":
+                return BalaTipo.HEAVY;
+            case "Bala Mine":
+                return BalaTipo.MINE;
+            default:
+                throw new IllegalArgumentException("Tipo de bala desconocido: " + balaSeleccionada);
+        }
     }
 
     public void crearBotonesMovimiento() {
@@ -623,5 +680,9 @@ public class InterfazCliente {
     //los tres tipos de balas y los tres tipos de radares.
     public void agregarImagenesProductos(JFrame pantallaCompra){
 
+    }
+
+    public void mostrarInterfaz() {
+        pantallaCliente.setVisible(true);
     }
 }

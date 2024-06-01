@@ -64,7 +64,7 @@ public class ThreadCliente extends Thread {
         Tablero tablero = (Tablero) receivedObject;
         cliente.crearBarco(cliente.getInterfazCliente(), tablero);
         cliente.getInterfazCliente().crearBotones();
-        cliente.getInterfazCliente().crearBotonMostrarOcultar(tablero);
+        cliente.getInterfazCliente().crearBotonInteractuar(tablero);
         for (int i = 0; i < tablero.getTableroMapa().length; i++) {
             for (int j = 0; j < tablero.getTableroMapa()[0].length; j++) {
                 if (tablero.getTableroMapa()[i][j] instanceof Mercado) {
