@@ -15,7 +15,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
-import javax.swing.Box;
 
 import Cliente.Cliente;
 import Modelos.Mensaje;
@@ -28,18 +27,15 @@ import Modelos.Tablero.Mercado;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.List;
@@ -347,6 +343,36 @@ public class InterfazCliente {
     // que se muestre las imagenes de los items y el precio
     // que se pueda seleccionar la cantidad de items a comprar
     // que se pueda comprar y se actualice el inventario
+    private JLabel lblBalasLong = new JLabel();
+    public void setBalasLong(int valor){
+        lblBalasLong.setText("Balas Long: " + valor);
+        lblBalasLong.setForeground(Color.WHITE);
+        lblBalasLong.setFont(new Font("Arial", Font.BOLD, 14));
+        ImageIcon balaIcono = new ImageIcon("src\\Modelos\\Barco\\balaLong.png");
+        Image balaImage = balaIcono.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        lblBalasLong.setIcon(new ImageIcon(balaImage));
+        agregarPanelInformacion(lblBalasLong, 10, 340);
+    }
+    private JLabel lblBalasHeavy = new JLabel();
+    public void setBalasHeavy(int valor){
+        lblBalasHeavy.setText("Balas Heavy: " + valor);
+        lblBalasHeavy.setForeground(Color.WHITE);
+        lblBalasHeavy.setFont(new Font("Arial", Font.BOLD, 14));
+        ImageIcon balaIcono = new ImageIcon("src\\Modelos\\Barco\\balaHeavy.jpg");
+        Image balaImage = balaIcono.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        lblBalasHeavy.setIcon(new ImageIcon(balaImage));
+        agregarPanelInformacion(lblBalasHeavy, 10, 370);
+    }
+    private JLabel lblBalasMine = new JLabel();
+    public void setBalasMine(int valor){
+        lblBalasMine.setText("Balas Mine: " + valor);
+        lblBalasMine.setForeground(Color.WHITE);
+        lblBalasMine.setFont(new Font("Arial", Font.BOLD, 14));
+        ImageIcon balaIcono = new ImageIcon("src\\Modelos\\Barco\\balaMine.jpg");
+        Image balaImage = balaIcono.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        lblBalasMine.setIcon(new ImageIcon(balaImage));
+        agregarPanelInformacion(lblBalasMine, 10, 400);
+    }
     public void mostrarMercado(){
 
     }
@@ -429,9 +455,10 @@ public class InterfazCliente {
     public void crearBotones() {
         crearBotonAtacar();
     }
+    private         JButton botonMostrarOcultar = new JButton("Interactuar celda");
 
     public void crearBotonMostrarOcultar(Tablero tablero) {
-        JButton botonMostrarOcultar = new JButton("Interactuar Celda");
+
         botonMostrarOcultar.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonMostrarOcultar.addActionListener(e -> {
             mostrarCelda(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), tablero.getTableroMapa()[cliente.getBarco().getPosicionX()][cliente.getBarco().getPosicionY()]);

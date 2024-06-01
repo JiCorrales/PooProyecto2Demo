@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public interface Bala {
 
-    public String getTipoBala();
+    public BalaTipo getTipoBala();
     public int getAlcanceBala();
     public int getDanoBala();
     public int getCostoBala();

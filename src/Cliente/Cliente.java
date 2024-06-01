@@ -10,6 +10,7 @@ import java.util.Random;
 
 
 import Interfaces.InterfazCliente;
+import Modelos.Barco.Bala;
 import Modelos.Mensaje;
 import Modelos.Barco.Barco;
 import Modelos.Tablero.CeldaVacia;
@@ -95,6 +96,9 @@ public class Cliente {
         interfazCliente.moverBarcoCelda(posicionBarcoX, posicionBarcoY);
         interfazCliente.setVida(barco.getNivelSalud());
         interfazCliente.setOro(barco.getOroDisponible());
+        interfazCliente.setBalasLong(barco.getBalasLong());
+        interfazCliente.setBalasHeavy(barco.getBalasHeavy());
+        interfazCliente.setBalasMine(barco.getBalasMine());
     }
 
     public void moverBarco(int posicionX, int posicionY){
@@ -118,7 +122,8 @@ public class Cliente {
         return nombre;
     }
     public void comprarBala(){}
-
+    public void getBalasLong(){
+    }
 
 
 }

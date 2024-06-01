@@ -3,15 +3,17 @@ package Modelos.Barco;
 import java.io.Serializable;
 
 public class BalaHeavy implements Bala, Serializable {
-    
-    private String tipoBala = "Heavy";
+
+    //quiero usar el enumerable de tipo de bala pero no se como hacerlo
+    private BalaTipo tipoBala = BalaTipo.HEAVY;
+
     private int alcanceBala = 3;
     private int danoBala = 20;
     private int costoBala = 250;
 
     public BalaHeavy() {}
 
-    public String getTipoBala() {
+    public BalaTipo getTipoBala() {
         return tipoBala;
     }
 

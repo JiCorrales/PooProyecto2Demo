@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 public class BalaMine implements Bala, Serializable {
     
-    private String tipoBala = "Mine";
+    private BalaTipo tipoBala = BalaTipo.MINE;
     private int alcanceBala = 0;
     private int danoBala = 50;
     private int costoBala = 1000;
 
     public BalaMine() {}
 
-    public String getTipoBala() {
+    public BalaTipo getTipoBala() {
         return tipoBala;
     }
 

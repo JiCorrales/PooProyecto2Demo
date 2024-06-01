@@ -1,6 +1,6 @@
 package Modelos.Barco;
 
-import java.util.List;
+import java.util.*;
 
 import java.io.Serializable;
 
@@ -9,7 +9,9 @@ public class Barco implements Serializable{
     private int nivelSalud = 100;
     private int oroDisponible = 2500;
     private int posicionX, posicionY;
-    private List<Bala> inventarioBalasCanon;
+    private ArrayList<Bala> inventarioBalasCanon = new ArrayList<Bala>() {
+
+    };
     private List<Radar> inventarioRadares;
 
     public Barco(String capitanBarco, int posicionInicialX, int posicionInicialY){
@@ -48,10 +50,10 @@ public class Barco implements Serializable{
     public void setPosicionY(int posicionY) {
         this.posicionY = posicionY;
     }
-    public List<Bala> getInventarioBalasCanon() {
+    public ArrayList<Bala> getInventarioBalasCanon() {
         return inventarioBalasCanon;
     }
-    public void setInventarioBalasCanon(List<Bala> inventarioBalasCanon) {
+    public void setInventarioBalasCanon(ArrayList<Bala> inventarioBalasCanon) {
         this.inventarioBalasCanon = inventarioBalasCanon;
     }
     public List<Radar> getInventarioRadares() {
@@ -59,5 +61,32 @@ public class Barco implements Serializable{
     }
     public void setInventarioRadares(List<Radar> inventarioRadares) {
         this.inventarioRadares = inventarioRadares;
+    }
+    public int getBalasLong(){
+        int contador = 0;
+        for (Bala bala : inventarioBalasCanon) {
+            if (bala.getTipoBala() == BalaTipo.LONG) {
+                contador++;
+            }
+        }
+    return contador;
+    }
+    public int getBalasHeavy() {
+        int contador = 0;
+        for (Bala bala : inventarioBalasCanon) {
+            if (bala.getTipoBala() == BalaTipo.HEAVY) {
+                contador++;
+            }
+        }
+        return contador;
+    }
+    public int getBalasMine() {
+        int contador = 0;
+        for (Bala bala : inventarioBalasCanon) {
+            if (bala.getTipoBala() == BalaTipo.MINE) {
+                contador++;
+            }
+        }
+        return contador;
     }
 }
