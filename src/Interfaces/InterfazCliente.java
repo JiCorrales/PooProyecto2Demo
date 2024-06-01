@@ -5,6 +5,9 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 
 import Cliente.Cliente;
+import Modelos.Barco.BalaHeavy;
+import Modelos.Barco.BalaLong;
+import Modelos.Barco.BalaMine;
 import Modelos.Barco.BalaTipo;
 import Modelos.Mensaje;
 import Modelos.Tablero.*;
@@ -408,30 +411,38 @@ public class InterfazCliente {
         mercadoFrame.setVisible(true);
     }
 
-//    private JButton getComprarButton(ArrayList<BalaTipo> productos,String producto, int precio, JFrame mercadoFrame) {
-//        JButton comprarButton = new JButton("Comprar " + producto);
-//        comprarButton.addActionListener(e -> {
-//            if (cliente.getBarco().getOroDisponible() >= precio) {
-//                cliente.getBarco().setOroDisponible(cliente.getBarco().getOroDisponible() - precio);
-//                setOro(cliente.getBarco().getOroDisponible());
-//                switch (productos){
-//                    case BalaTipo.LONG:
-//                        cliente.getBarco().getInventarioBalasCanon().add(new BalaLong());
-//                        break;
-//                    case BalaTipo.HEAVY:
-//                        cliente.getBarco().getInventarioBalasCanon().add(new BalaHeavy());
-//                        break;
-//                    case BalaTipo.MINE:
-//                        cliente.getBarco().getInventarioBalasCanon().add(new BalaMine());
-//                        break;
-//
-//                }
-//            } else {
-//                JOptionPane.showMessageDialog(mercadoFrame, "No tienes suficiente oro para comprar " + producto, "Mercado", JOptionPane.INFORMATION_MESSAGE);
-//            }
-//        });
-//        return comprarButton;
-//    }
+    private JButton getComprarButton(ArrayList<BalaTipo> productos, String producto, int precio, JFrame mercadoFrame) {
+        JButton comprarButton = new JButton("Comprar " + producto);
+        comprarButton.addActionListener(e -> {
+            if (cliente.getBarco().getOroDisponible() >= precio) {
+                cliente.getBarco().setOroDisponible(cliente.getBarco().getOroDisponible() - precio);
+                setOro(cliente.getBarco().getOroDisponible());
+
+                for (BalaTipo tipo : productos) {
+                    switch (tipo) {
+                        case LONG:
+                            cliente.getBarco().getInventarioBalasCanon().add(new BalaLong());
+                            setBalasLong(cliente.getBarco().getBalasLong() + 1);
+                            break;
+                        case HEAVY:
+                            cliente.getBarco().getInventarioBalasCanon().add(new BalaHeavy());
+                            setBalasHeavy(cliente.getBarco().getBalasHeavy() + 1);
+                            break;
+                        case MINE:
+                            cliente.getBarco().getInventarioBalasCanon().add(new BalaMine());
+                            setBalasMine(cliente.getBarco().getBalasMine() + 1);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Tipo de bala desconocido: " + tipo);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(mercadoFrame, "No tienes suficiente oro para comprar " + producto, "Mercado", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        return comprarButton;
+    }
+
 
     public void setInventarioRadares(List<String> radares) {
         agregarPanelInventario(radares, "Inventario de Radares", 10, 450);
