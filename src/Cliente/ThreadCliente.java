@@ -1,17 +1,12 @@
 package Cliente;
 
 import Modelos.Mensaje;
-import Modelos.Barco.Barco;
-import Modelos.Tablero.CeldaAmenaza;
-import Modelos.Tablero.CeldaTesoro;
-import Modelos.Tablero.CeldaVacia;
 import Modelos.Tablero.Mercado;
 import Modelos.Tablero.Tablero;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,24 +27,37 @@ public class ThreadCliente extends Thread {
     }
 
     public void run() {
+        Object receivedObject;
         while (isRunning) {
             try {
-                Object receivedObject = entrada.readObject();
-                if (receivedObject instanceof Mensaje) {
-                    recibeMensaje(receivedObject);
-                } else if (receivedObject instanceof Tablero) {
-                    recibeTablero(receivedObject);
-                }
-
+                receivedObject = entrada.readObject();
+                processReceivedObject(receivedObject);
             } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+
+                System.out.println("Error al recibir el objeto");
+                System.out.println(ex.getMessage());
+
             }
         }
     }
+
+    private void processReceivedObject(Object receivedObject) {
+        if (receivedObject instanceof Mensaje) {
+            recibeMensaje(receivedObject);
+        } else if (receivedObject instanceof Tablero) {
+            recibeTablero(receivedObject);
+        } else {
+            System.out.println("Objeto no reconocido");
+            System.out.println(receivedObject.toString());
+        }
+    }
+
+
+
     public void recibeMensaje(Object receivedObject){
         Mensaje mensaje = (Mensaje) receivedObject;
         cliente.getInterfazCliente().write(mensaje.toString());
-        switch (mensaje.getMensaje().trim()) {
+        switch (mensaje.getContenido().trim()) {
             case "¡Ha iniciado la partida!":
                 cliente.getInterfazCliente().agregarPanelInformacionBarco(cliente);
                 break;

@@ -10,7 +10,6 @@ import java.util.Random;
 
 
 import Interfaces.InterfazCliente;
-import Modelos.Barco.Bala;
 import Modelos.Mensaje;
 import Modelos.Barco.Barco;
 import Modelos.Tablero.CeldaVacia;
@@ -60,7 +59,9 @@ public class Cliente {
             JOptionPane.showMessageDialog(null, "Tienes que escribir algo para poder enviarlo.");
         }
     }
+    public synchronized void enviarAtaque(int coordenadaX, int coordenadaY, int daño){
 
+    }
     public void crearBarco(InterfazCliente interfazCliente, Tablero tablero){
         Random random = new Random();
         int selectorEstatico = random.nextInt(3);
@@ -89,22 +90,34 @@ public class Cliente {
                 posicionBarcoY = 14;
                 break;
         }
-        barco = new Barco(nombre, posicionBarcoX, posicionBarcoY);
-        tablero.getTableroMapa()[posicionBarcoX][posicionBarcoY] = new CeldaVacia(posicionBarcoX, posicionBarcoY);
-        tablero.getTableroMapa()[posicionBarcoX][posicionBarcoY].setCeldaVisible(true);
-        interfazCliente.mostrarCelda(posicionBarcoX, posicionBarcoY, tablero.getTableroMapa()[posicionBarcoX][posicionBarcoY]);
+        barco = new Barco(nombre, posicionBarcoX, posicionBarcoY); // Asegúrate de que 'nombre' esté definido
+        CeldaVacia celda = new CeldaVacia(posicionBarcoX, posicionBarcoY);
+        celda.setCeldaVisible(true);
+        tablero.getTableroMapa()[posicionBarcoX][posicionBarcoY] = celda;
+
+        interfazCliente.mostrarCelda(posicionBarcoX, posicionBarcoY, celda);
         interfazCliente.moverBarcoCelda(posicionBarcoX, posicionBarcoY);
         interfazCliente.setVida(barco.getNivelSalud());
         interfazCliente.setOro(barco.getOroDisponible());
         interfazCliente.setBalasLong(barco.getBalasLong());
         interfazCliente.setBalasHeavy(barco.getBalasHeavy());
         interfazCliente.setBalasMine(barco.getBalasMine());
+
+        int [] coordenadas = new int[]{posicionBarcoX, posicionBarcoY};
+        int [] coordenadasAnteriores = new int[]{0, 0};
+        enviarMensaje(new Mensaje(nombre, "Barco creado en la posición: " +
+                posicionBarcoX + ", " + posicionBarcoY, coordenadas, barco, coordenadasAnteriores));    }
+    //Método que envía la posición del barco al servidor
+    public void enviarPosicionBarco(int posicionX, int posicionY, Barco barco){
+        try {
+            salidaDatos.writeInt(posicionX);
+            salidaDatos.writeInt(posicionY);
+            salida.writeObject(barco);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void moverBarco(int posicionX, int posicionY){
-        barco.setPosicionX(posicionX);
-        barco.setPosicionY(posicionY);
-    }
 
     public Barco getBarco() {
         return barco;

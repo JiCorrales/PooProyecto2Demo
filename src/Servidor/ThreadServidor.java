@@ -10,7 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ThreadServidor extends Thread{
+public class ThreadServidor extends Thread {
     public Socket socket;
     private Servidor server;
     private ObjectInputStream entrada;
@@ -31,52 +31,42 @@ public class ThreadServidor extends Thread{
         }
     }
 
-    public void enviarMensaje(Mensaje mensaje){
+    public void enviarMensaje(Mensaje mensaje) {
         try {
             salida.writeObject(mensaje);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void run() {
         Object receivedObject;
 
         try {
-
             this.nombre = entradaDatos.readUTF();
             server.getInterfazServidor().agregarAlHistorial("Recibido el nombre: " + nombre, Color.RED);
-//            server.sendCasilla(server.pantalla.casillas);
-
-
         } catch (IOException ex) {
-
+            // do nothing
         }
-        while(isRunning){
+
+        while (isRunning) {
             try {
                 receivedObject = entrada.readObject();
-                if(receivedObject instanceof Mensaje){
+                if (receivedObject instanceof Mensaje) {
                     Mensaje mensaje = (Mensaje) receivedObject;
-                    server.getInterfazServidor().agregarAlHistorial("Recibido:" + mensaje, Color.BLACK);
-                    server.enviarMensaje(mensaje);
+                    if (mensaje.getPosicion() != null) {
+                        server.actualizarPosicionBarco(mensaje.getPosicion(), nombre, mensaje.getBarco(), mensaje.getPosicionAnterior());
+                    } else {
+                        server.enviarMensaje(mensaje);
+                        server.getInterfazServidor().agregarAlHistorial("Recibido: " + mensaje, Color.BLACK);
+                    }
 
-                }/*else if (receivedObject instanceof Casilla){
-                    Casilla casilla = (Casilla) receivedObject;
-                    int x = casilla.getX();
-                    int y = casilla.getY();
-                    server.pantalla.casillas[x][y].setTieneBarco(true);
-                    server.pantalla.tableroBtns[x][y].setBackground(Color.blue);
-                }*/
-
-
+                }
             } catch (IOException | ClassNotFoundException ex) {
-
-                //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
+                // do nothing
             }
-            //Logger.getLogger(ThreadServidor.class.getName()).log(Level.SEVERE, null, ex);
-
-
-
         }
+
     }
 }

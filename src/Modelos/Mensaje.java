@@ -1,35 +1,64 @@
 package Modelos;
 
+import Cliente.Cliente;
+import Modelos.Barco.Barco;
+
 import java.io.Serializable;
 
 public class Mensaje implements Serializable{
-
-    private String enviador;
-    private String mensaje;
-
+    Cliente cliente;
+    private String remitente;
+    private String contenido;
+    private int[] posicion;
+    private int[] posicionAnterior;
+    private Barco barco;
     public Mensaje(String enviador, String mensaje) {
-        this.enviador = enviador;
-        this.mensaje = mensaje;
+        this.remitente = enviador;
+        this.contenido = mensaje;
+    }
+    public Mensaje(String enviador, String mensaje, int[] posicion, Barco barco, int[] posicionAnterior) {
+        this.remitente = enviador;
+        this.contenido = mensaje;
+        this.posicion = posicion;
+        this.barco = barco;
+        this.posicionAnterior = posicionAnterior;
+    }
+    public String getRemitente() {
+        return remitente;
     }
 
-    public String getEnviador() {
-        return enviador;
+    public void setRemitente(String remitente) {
+        this.remitente = remitente;
     }
 
-    public void setEnviador(String enviador) {
-        this.enviador = enviador;
+    public String getContenido() {
+        return contenido;
     }
 
-    public String getMensaje() {
-        return mensaje;
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
     }
 
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
 
+    public int[] getPosicion() {
+        return posicion;
+    }
+    public int[] getPosicionAnterior() {
+        return posicionAnterior;
+    }
+    public void setPosicion(int[] posicion) {
+        this.posicion = posicion;
+    }
     @Override
     public String toString() {
-        return "Mensaje de " + enviador + ": \"" + mensaje;
+        return "Mensaje de " + remitente + ": \"" + contenido;
+    }
+
+    public Barco getBarco() {
+        return barco;
+    }
+
+    public void setBarco(Barco barco) {
+        this.barco = barco;
     }
 }

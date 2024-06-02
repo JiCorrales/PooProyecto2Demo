@@ -11,5 +11,10 @@ public class App {
         interfazCliente.mostrarInterfaz();
         InterfazCliente interfazCliente2 = new InterfazCliente(tablero);
         interfazCliente2.mostrarInterfaz();
+        InterfazCliente interfazCliente3 = new InterfazCliente(tablero);
+        interfazCliente3.mostrarInterfaz();
+        InterfazCliente interfazCliente4 = new InterfazCliente(tablero);
+        interfazCliente4.mostrarInterfaz();
+
     }
 }

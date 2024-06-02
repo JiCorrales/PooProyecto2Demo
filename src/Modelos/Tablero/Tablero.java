@@ -11,10 +11,5 @@ public class Tablero implements Serializable {
     public Celda[][] getTableroMapa() {
         return tableroMapa;
     }
-
-    public void setTableroMapa(Celda[][] tableroMapa) {
-        this.tableroMapa = tableroMapa;
-    }
-
     
 }

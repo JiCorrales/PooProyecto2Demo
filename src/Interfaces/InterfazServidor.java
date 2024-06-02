@@ -1,20 +1,12 @@
 package Interfaces;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import Modelos.Barco.Barco;
 import Modelos.Tablero.Tablero;
 import Modelos.Tablero.Celda;
 import Modelos.Tablero.CeldaAmenaza;
@@ -119,7 +111,7 @@ public class InterfazServidor {
         ImageIcon fondoTableroIcon = new ImageIcon("src/Interfaces/fondoTablero.jpeg");
         fondoTablero.setIcon(fondoTableroIcon);
         jLayeredPane.add(fondoTablero, JLayeredPane.DEFAULT_LAYER);
-    
+
         for (int i = 0; i < mapaTablero.length; i++) {
             for (int j = 0; j < mapaTablero[0].length; j++) {
                 cuadro = new JPanel();
@@ -127,14 +119,14 @@ public class InterfazServidor {
                 cuadro.setBorder(BorderFactory.createLineBorder(Color.WHITE));
                 cuadro.setPreferredSize(new Dimension(anchoCeldaMatriz, altoCeldaMatriz));
                 cuadro.setLayout(new BorderLayout());
-    
+
                 imagenLabel = new JLabel();
                 cuadro.add(imagenLabel, BorderLayout.CENTER);
                 tableroMatriz.add(cuadro);
                 celdasMatriz[i][j] = imagenLabel;
             }
         }
-    
+
         int anchoFondo = (anchoCeldaMatriz * mapaTablero[0].length) + 50;
         int altoFondo = (altoCeldaMatriz * mapaTablero.length) + 50;
     
@@ -169,7 +161,13 @@ public class InterfazServidor {
         Image fondoCeldaMercadoScaledImage = fondoCeldaMercadoImage.getScaledInstance(anchoCeldaMatriz, altoCeldaMatriz, Image.SCALE_SMOOTH);
         fondoCeldaMercadoTableroScaledIcon = new ImageIcon(fondoCeldaMercadoScaledImage);
     }
-
+    public void cargarImagenesBarcos(int i, int j) {
+        ImageIcon barcoIcon = new ImageIcon("src/Modelos/Barco/barco.png");
+        Image barcoImage = barcoIcon.getImage();
+        Image barcoScaledImage = barcoImage.getScaledInstance(anchoCeldaMatriz, altoCeldaMatriz, Image.SCALE_SMOOTH);
+        ImageIcon barcoScaledIcon = new ImageIcon(barcoScaledImage);
+        celdasMatriz[i][j].setIcon(barcoScaledIcon);
+    }
     public void configurarCeldasInterfaz(Tablero tablero) {
         Celda[][] mapaTablero = tablero.getTableroMapa();
         for (int i = 0; i < mapaTablero.length; i++) {
@@ -199,11 +197,47 @@ public class InterfazServidor {
         historialChat.setCaretPosition(historialChat.getDocument().getLength());
     }
 
+    public void actualizarPosicionBarco(int[] posicion, String nombre) {
+        int x = posicion[0];
+        int y = posicion[1];
+
+        // Limpiar la posición anterior del barco (asumiendo que solo hay un barco por jugador)
+        for (int i = 0; i < celdasMatriz.length; i++) {
+            for (int j = 0; j < celdasMatriz[0].length; j++) {
+                if (celdasMatriz[i][j].getIcon() != null && celdasMatriz[i][j].getIcon().equals(nombre)) {
+                    celdasMatriz[i][j].setIcon(null);
+                }
+            }
+        }
+
+        // Establecer la nueva posición del barco
+        celdasMatriz[x][y].setIcon(new ImageIcon("src/Modelos/Barco/barco.png")); // Asegúrate de que este es el icono correcto para el barco
+        agregarAlHistorial("Barco de " + nombre + " movido a (" + x + ", " + y + ")", Color.BLUE);
+    }
     public void mostrarInterfaz() {
         pantallaServidor.setVisible(true);
     }
 
     public JFrame getPantallaServidor() {
         return pantallaServidor;
+    }
+    public void moverBarcoCelda(int x, int y, Barco barco, int posicionAnteriorX, int posicionAnteriorY) {
+        Icon icon = celdasMatriz[x][y].getIcon(); // Guardar el icono de la celda actual
+        vaciarIconoCelda(x, y); // Vaciar la celda actual
+        // Establecer la nueva posición del barco
+        celdasMatriz[x][y].setIcon(new ImageIcon("src/Modelos/Barco/barco.png"));
+        // Agregar al historial
+        agregarAlHistorial("Barco de " + barco.getCapitanBarco() + " movido a (" + x + ", " + y + ")", Color.BLUE);
+        // Cargar las imágenes de los barcos en las celdas
+        cargarImagenesBarcos(x, y);
+        // Quitar la imagen del barco de la celda anterior
+        quitarImagenBarco(posicionAnteriorX, posicionAnteriorY, icon);
+
+    }
+    public void quitarImagenBarco(int x, int y, Icon icon) {
+        celdasMatriz[x][y].setIcon(icon);
+    }
+    public void vaciarIconoCelda(int x, int y) {
+        celdasMatriz[x][y].setIcon(null);
     }
 }

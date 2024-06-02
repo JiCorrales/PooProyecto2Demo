@@ -1,6 +1,7 @@
 package Servidor;
 
 import Interfaces.InterfazServidor;
+import Modelos.Barco.Barco;
 import Modelos.Mensaje;
 import Modelos.Tablero.*;
 
@@ -119,5 +120,15 @@ public class Servidor{
 
     public InterfazServidor getInterfazServidor() {
         return interfazServidor;
+    }
+
+
+    public void actualizarPosicionBarco(int[] posicion, String nombre, Barco barco, int[] posicionAnterior) {
+        if (posicionAnterior[0] == -1 && posicionAnterior[1] == -1) {
+            System.out.println("Primer movimiento del barco");
+        } else {
+            interfazServidor.moverBarcoCelda(posicion[0], posicion[1], barco, posicionAnterior[0], posicionAnterior[1]);
+        }
+
     }
 }

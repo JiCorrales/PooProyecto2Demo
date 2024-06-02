@@ -15,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 import java.util.logging.*;
 
 
@@ -50,7 +49,6 @@ public class InterfazCliente {
     private JLabel lblRadarMedio = new JLabel();
     private JLabel lblRadarLargo = new JLabel();
     private JPanel panelMercado = new JPanel();
-    JButton btnAtacar = new JButton("Atacar");
     public InterfazCliente(Tablero tablero) {
         this.tablero = tablero;
 
@@ -268,29 +266,33 @@ public class InterfazCliente {
             for (Component componente : cuadroAnterior.getComponents()) {
                 if (componente instanceof JLabel) {
                     Icon icono = ((JLabel) componente).getIcon();
-                    if (icono == barcoTableroScaledIcon) {
-                        cuadroAnterior.remove(componente);
-                        cuadroAnterior.revalidate();
-                        cuadroAnterior.repaint();
+                    if (icono == barcoTableroScaledIcon) { // Si el componente es el barco
+                        cuadroAnterior.remove(componente); // Remover el barco de la celda anterior
+                        cuadroAnterior.revalidate(); // Revalidar el panel
+                        cuadroAnterior.repaint(); // Repintar el panel
                         break;
                     }
                 }
             }
         }
-
+        System.out.println("Moviendo barco a la celda [" + x + ", " + y + "]");
+        System.out.println("Posición anterior: [" + posicionAnteriorX + ", " + posicionAnteriorY + "]");
+        int pViejaX = posicionAnteriorX;
+        int pViejaY = posicionAnteriorY;
         posicionAnteriorX = x;
         posicionAnteriorY = y;
 
         JLabel iconoBarcoLabel = new JLabel(barcoTableroScaledIcon);
         cuadroNuevo.add(iconoBarcoLabel);
-        jLayeredPane.moveToFront(cuadroNuevo);
+//        jLayeredPane.moveToBack(cuadroNuevo);
+        cliente.enviarMensaje(new Mensaje(cliente.getNombre(),
+                "Se ha movido a la celda [" + x + ", " + y + "]",
+                        new int[]{x, y}, cliente.getBarco(), new int[]{pViejaX, pViejaY})
+        );
     }
-
-    public void establecerPosicionInicialBarco(int x, int y) {
-        posicionAnteriorX = x;
-        posicionAnteriorY = y;
+    public ImageIcon getBarcoTableroScaledIcon() {
+        return barcoTableroScaledIcon;
     }
-
     public void mostrarCelda(int x, int y, Celda celda) {
         if (celda instanceof CeldaVacia) {
             celdasMatriz[x][y].setIcon(fondoCeldaVaciaTableroScaledIcon);
@@ -326,6 +328,21 @@ public class InterfazCliente {
         agregarPanelInformacion(oroLabel, 10, 230);
     }
 
+    //quiero una funcion que depende del tipo de bala que se compre, se actualice
+    // la interfaz del cliente con la cantidad de balas que tiene de ese tipo
+    public void setBalas(int valor, BalaTipo tipo) {
+        switch (tipo) {
+            case LONG:
+                setBalasLong(cliente.getBarco().getBalasLong() + valor);
+                break;
+            case HEAVY:
+                setBalasHeavy(cliente.getBarco().getBalasHeavy() + valor);
+                break;
+            case MINE:
+                setBalasMine(cliente.getBarco().getBalasMine() + valor);
+                break;
+        }
+    }
     public void setBalasLong(int valor){
         lblBalasLong.setText("Balas Long: " + valor);
         lblBalasLong.setForeground(Color.WHITE);
@@ -397,7 +414,7 @@ public class InterfazCliente {
             gbc.anchor = GridBagConstraints.WEST;
             panelMercado.add(productoLabel, gbc);
 
-            JButton comprarButton = getComprarButton(productos, producto,precio, mercadoFrame);
+            JButton comprarButton = getComprarButton(producto,precio, mercadoFrame);
             gbc.gridx = 1;
             gbc.gridy = i + 1;
             gbc.anchor = GridBagConstraints.EAST;
@@ -408,7 +425,7 @@ public class InterfazCliente {
         mercadoFrame.setVisible(true);
     }
 
-    private JButton getComprarButton(ArrayList<BalaTipo> productos, String producto, int precio, JFrame mercadoFrame) {
+    private JButton getComprarButton( String producto, int precio, JFrame mercadoFrame) {
         JButton comprarButton = new JButton("Comprar " + producto);
         comprarButton.addActionListener(e -> {
             if (cliente.getBarco().getOroDisponible() >= precio) {
@@ -417,6 +434,7 @@ public class InterfazCliente {
                 if (comprarButton.getText().equals("Comprar "+ BalaTipo.LONG.toString())){
                     cliente.getBarco().agregarBalaLong();
                     setBalasLong(cliente.getBarco().getBalasLong());
+                    System.out.println(cliente.getBarco().getBalasLong());
                 } else if (comprarButton.getText().equals("Comprar "+ BalaTipo.HEAVY.toString())){
                     cliente.getBarco().agregarBalaHeavy();
                     setBalasHeavy(cliente.getBarco().getBalasHeavy());
@@ -441,11 +459,6 @@ public class InterfazCliente {
         return comprarButton;
     }
 
-
-    public void setInventarioRadares(List<String> radares) {
-        agregarPanelInventario(radares, "Inventario de Radares", 10, 450);
-    }
-
     private void agregarPanelInformacion(JLabel label, int x, int y) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -455,36 +468,6 @@ public class InterfazCliente {
         panel.setOpaque(false);
         jLayeredPane.add(panel, JLayeredPane.PALETTE_LAYER);
         panel.setBounds(x, y, 250, 40);
-    }
-
-    private void agregarPanelInventario(List<String> elementos, String titulo, int x, int y) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setPreferredSize(new Dimension(250, 100));
-
-        JLabel tituloLabel = new JLabel(titulo);
-        tituloLabel.setHorizontalAlignment(JLabel.CENTER);
-        tituloLabel.setForeground(Color.WHITE);
-        tituloLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        panel.add(tituloLabel, BorderLayout.NORTH);
-
-        JTextArea inventarioArea = new JTextArea();
-        inventarioArea.setOpaque(false);
-        inventarioArea.setForeground(Color.WHITE);
-        inventarioArea.setFont(new Font("Arial", Font.PLAIN, 14));
-
-        for (String elemento : elementos) {
-            inventarioArea.append(elemento + "\n");
-        }
-
-        JScrollPane scrollPane = new JScrollPane(inventarioArea);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        panel.setOpaque(false);
-        jLayeredPane.add(panel, JLayeredPane.PALETTE_LAYER);
-        panel.setBounds(x, y, 250, 100);
     }
 
     public void moverBarco(String direccion) {
@@ -515,7 +498,7 @@ public class InterfazCliente {
     }
 
     public void crearBotones() {
-        crearBotonAtacar();
+        crearCombox();
     }
     private JButton btnInteractuar = new JButton("Interactuar celda");
 
@@ -545,20 +528,11 @@ public class InterfazCliente {
     }
 
     public void atacar (int x, int y, BalaTipo balaTipo){
-        btnAtacar.addActionListener(e -> {
-            if (balaTipo == BalaTipo.LONG){
-                cliente.getBarco().getInventarioBalasCanon().getFirst().atacar();
-            } else if (balaTipo == BalaTipo.HEAVY){
-                cliente.getBarco().getInventarioBalasCanon().get(1).atacar();
-            } else if (balaTipo == BalaTipo.MINE){
-                cliente.getBarco().getInventarioBalasCanon().get(2).atacar();
-            }
-        });
-    }
+        System.out.println("Atacando a la celda [" + x + ", " + y + "] con la bala " + balaTipo);
+     }
     private JButton btnUseBala = new JButton("Usar Bala");
     private JButton btnUseRadar = new JButton("Usar Radar");
-    private void crearBotonAtacar() {
-        btnAtacar.setAlignmentX(Component.CENTER_ALIGNMENT);
+    private void crearCombox() {
 
         // Crear JComboBox para seleccionar el tipo de bala
         String[] tiposBala = {"Bala Long", "Bala Heavy", "Bala Mine"};
@@ -571,32 +545,53 @@ public class InterfazCliente {
         // Panel para los JComboBox
         JPanel panelSeleccion = new JPanel();
         panelSeleccion.setLayout(new GridLayout(2, 2,   0, 0));
+        panelSeleccion.setPreferredSize(new Dimension(50, 50));
+        panelSeleccion.setBounds(900, 80, 250, 150);
         panelSeleccion.add(comboBala);
         panelSeleccion.add(comboRadar);
         panelSeleccion.add(btnUseBala);
         panelSeleccion.add(btnUseRadar);
+        btnUseBala.addActionListener(e -> {
+            if (cliente.getBarco().getBalasLong() == 0 && cliente.getBarco().getBalasHeavy() == 0 && cliente.getBarco().getBalasMine() == 0) {
+                JOptionPane.showMessageDialog(pantallaCliente, "No tienes balas disponibles", "Atacar", JOptionPane.INFORMATION_MESSAGE);
+            } else if (cliente.getBarco().getBalasLong() > 0){
+                String balaSeleccionada = (String) comboBala.getSelectedItem();
+                assert balaSeleccionada != null;
+                BalaTipo balaTipo = obtenerBalaTipo(balaSeleccionada);
+                atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
+                setBalas(-1, balaTipo);
+            } else if (cliente.getBarco().getBalasHeavy() > 0){
+                String balaSeleccionada = (String) comboBala.getSelectedItem();
+                assert balaSeleccionada != null;
+                BalaTipo balaTipo = obtenerBalaTipo(balaSeleccionada);
+                atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
+                setBalas(-1, balaTipo);
+            } else if (cliente.getBarco().getBalasMine() > 0){
+                String balaSeleccionada = (String) comboBala.getSelectedItem();
+                assert balaSeleccionada != null;
+                BalaTipo balaTipo = obtenerBalaTipo(balaSeleccionada);
+                atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
+                setBalas(-1, balaTipo);
+            }
 
-        btnAtacar.addActionListener(e -> {
-            String balaSeleccionada = (String) comboBala.getSelectedItem();
-            String radarSeleccionado = (String) comboRadar.getSelectedItem();
+//
+//                String balaSeleccionada = (String) comboBala.getSelectedItem();
+//                assert balaSeleccionada != null;
+//                BalaTipo balaTipo = obtenerBalaTipo(balaSeleccionada);
+//                atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
+//                setBalas(-1, balaTipo);
 
-            BalaTipo balaTipo = obtenerBalaTipo(balaSeleccionada);
-            atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
-
-            // Lógica para radar seleccionado (si es necesario)
         });
-
         // Panel para el botón de atacar
         JPanel panelBoton = new JPanel();
         panelBoton.setLayout(new BorderLayout());
-        panelBoton.add(btnAtacar, BorderLayout.CENTER);
 
         // Panel contenedor para el botón y las selecciones
         JPanel panelContenedor = new JPanel();
         panelContenedor.setLayout(new BorderLayout());
         panelContenedor.add(panelSeleccion, BorderLayout.CENTER);
         panelContenedor.add(panelBoton, BorderLayout.SOUTH);
-        panelContenedor.setBounds(950, 80, 250, 150);
+        panelContenedor.setBounds(900, 80, 250, 150);
 
         jLayeredPane.add(panelContenedor, JLayeredPane.MODAL_LAYER);
     }
@@ -622,7 +617,7 @@ public class InterfazCliente {
         JPanel panelMovimiento = new JPanel();
         panelMovimiento.setLayout(new GridLayout(2, 2));
         panelMovimiento.setPreferredSize(new Dimension(150, 150));
-        panelMovimiento.setBounds(950, 200, 150, 150);
+        panelMovimiento.setBounds(950, 300, 150, 150);
 
         JButton botonArriba = new JButton("\u2191");
         JButton botonAbajo = new JButton("\u2193");
@@ -674,13 +669,6 @@ public class InterfazCliente {
         jLayeredPane.add(panelMovimiento, JLayeredPane.MODAL_LAYER);
     }
 
-    //En esta pantalla se tienen que mostrar los productos que se pueden comprar.
-    //O sea,
-    //Mostrar los productos que se pueden comprar
-    //los tres tipos de balas y los tres tipos de radares.
-    public void agregarImagenesProductos(JFrame pantallaCompra){
-
-    }
 
     public void mostrarInterfaz() {
         pantallaCliente.setVisible(true);

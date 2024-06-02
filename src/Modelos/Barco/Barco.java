@@ -6,7 +6,7 @@ import java.util.*;
 
 import java.io.Serializable;
 
-public class Barco implements Serializable{
+public class Barco implements Serializable {
     private String capitanBarco;
     private int nivelSalud = 100;
     private int oroDisponible = 2500;
@@ -16,7 +16,7 @@ public class Barco implements Serializable{
     };
     private List<Radar> inventarioRadares;
 
-    public Barco(String capitanBarco, int posicionInicialX, int posicionInicialY){
+    public Barco(String capitanBarco, int posicionInicialX, int posicionInicialY) {
         this.capitanBarco = capitanBarco;
         this.posicionX = posicionInicialX;
         this.posicionY = posicionInicialY;
@@ -25,54 +25,69 @@ public class Barco implements Serializable{
     public String getCapitanBarco() {
         return capitanBarco;
     }
+
     public void setCapitanBarco(String capitanBarco) {
         this.capitanBarco = capitanBarco;
     }
+
     public int getNivelSalud() {
         return nivelSalud;
     }
+
     public void setNivelSalud(int nivelSalud) {
         this.nivelSalud = nivelSalud;
     }
+
     public int getOroDisponible() {
         return oroDisponible;
     }
+
     public void setOroDisponible(int oroDisponible) {
         this.oroDisponible = oroDisponible;
     }
+
     public int getPosicionX() {
         return posicionX;
     }
+
     public void setPosicionX(int posicionX) {
         this.posicionX = posicionX;
     }
+
     public int getPosicionY() {
         return posicionY;
     }
+
     public void setPosicionY(int posicionY) {
         this.posicionY = posicionY;
     }
+
     public ArrayList<Bala> getInventarioBalasCanon() {
         return inventarioBalasCanon;
     }
+
     public void setInventarioBalasCanon(ArrayList<Bala> inventarioBalasCanon) {
         this.inventarioBalasCanon = inventarioBalasCanon;
     }
+
     public List<Radar> getInventarioRadares() {
         return inventarioRadares;
     }
+
     public void setInventarioRadares(List<Radar> inventarioRadares) {
         this.inventarioRadares = inventarioRadares;
     }
-    public int getBalasLong(){
+
+    public int getBalasLong() {
         int contador = 0;
         for (Bala bala : inventarioBalasCanon) {
             if (bala.getTipoBala() == BalaTipo.LONG) {
                 contador++;
             }
         }
-    return contador;
+        return contador;
     }
+
     public int getBalasHeavy() {
         int contador = 0;
         for (Bala bala : inventarioBalasCanon) {
@@ -82,6 +97,7 @@ public class Barco implements Serializable{
         }
         return contador;
     }
+
     public int getBalasMine() {
         int contador = 0;
         for (Bala bala : inventarioBalasCanon) {
@@ -91,6 +107,7 @@ public class Barco implements Serializable{
         }
         return contador;
     }
+
     public void agregarBalaLong() {
         inventarioBalasCanon.add(new BalaLong());
     }
@@ -98,7 +115,35 @@ public class Barco implements Serializable{
     public void agregarBalaHeavy() {
         inventarioBalasCanon.add(new BalaHeavy());
     }
+
     public void agregarBalaMine() {
         inventarioBalasCanon.add(new BalaMine());
+    }
+
+    public int[] getPosicion() {
+        int[] posicion = {posicionX, posicionY};
+        return posicion;
+    }
+
+    public void getBalaSeleccionada(BalaTipo tipoBala) {
+        for (Bala bala : inventarioBalasCanon) {
+            if (bala.getTipoBala() == tipoBala) {
+                inventarioBalasCanon.remove(bala);
+                break;
+            }
+        }
+    }
+    public void setBalaSeleccionada(BalaTipo tipoBala) {
+        switch (tipoBala) {
+            case LONG:
+                agregarBalaLong();
+                break;
+            case HEAVY:
+                agregarBalaHeavy();
+                break;
+            case MINE:
+                agregarBalaMine();
+                break;
+        }
     }
 }
