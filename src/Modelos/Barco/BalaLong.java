@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class BalaLong implements Bala, Serializable {
     
-    private BalaTipo tipoBala = BalaTipo.LONG;
+    private BalaTipo tipoBala = BalaTipo.LONGG;
     private int alcanceBala = 8;
     private int danoBala = 10;
     private int costoBala = 250;
@@ -28,7 +28,7 @@ public class BalaLong implements Bala, Serializable {
     }
     @Override
     public String toString() {
-        return "LONG";
+        return "LONGG";
     }
     @Override
     public void atacar() {

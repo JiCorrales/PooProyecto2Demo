@@ -102,6 +102,9 @@ public class Cliente {
         interfazCliente.setBalasLong(barco.getBalasLong());
         interfazCliente.setBalasHeavy(barco.getBalasHeavy());
         interfazCliente.setBalasMine(barco.getBalasMine());
+        interfazCliente.setRadarLong(barco.getRadarLong());
+        interfazCliente.setRadarShort(barco.getRadarShort());
+        interfazCliente.setRadarSpots(barco.getRadarSpots());
 
         int [] coordenadas = new int[]{posicionBarcoX, posicionBarcoY};
         int [] coordenadasAnteriores = new int[]{0, 0};

@@ -1,7 +1,5 @@
 package Modelos.Barco;
 
-import Cliente.Cliente;
-
 import java.util.*;
 
 import java.io.Serializable;
@@ -20,6 +18,8 @@ public class Barco implements Serializable {
         this.capitanBarco = capitanBarco;
         this.posicionX = posicionInicialX;
         this.posicionY = posicionInicialY;
+        inventarioRadares = new ArrayList<Radar>() {
+        };
     }
 
     public String getCapitanBarco() {
@@ -81,7 +81,7 @@ public class Barco implements Serializable {
     public int getBalasLong() {
         int contador = 0;
         for (Bala bala : inventarioBalasCanon) {
-            if (bala.getTipoBala() == BalaTipo.LONG) {
+            if (bala.getTipoBala() == BalaTipo.LONGG) {
                 contador++;
             }
         }
@@ -135,7 +135,7 @@ public class Barco implements Serializable {
     }
     public void setBalaSeleccionada(BalaTipo tipoBala) {
         switch (tipoBala) {
-            case LONG:
+            case LONGG:
                 agregarBalaLong();
                 break;
             case HEAVY:
@@ -145,5 +145,116 @@ public class Barco implements Serializable {
                 agregarBalaMine();
                 break;
         }
+    }
+
+    public int getRadar(RadarTipo radarTipo) {
+        int contador = 0;
+        for (Radar radar : inventarioRadares) {
+            if (radar.getTipoRadar() == radarTipo) {
+                contador++;
+            }
+        }
+        return contador;
+    }
+    public void agregarRadar(RadarTipo radarTipo) {
+        switch (radarTipo) {
+            case SHORT:
+                inventarioRadares.add(new RadarShort());
+                break;
+            case LONG:
+                inventarioRadares.add(new RadarLong());
+                break;
+            case SPOTS:
+                inventarioRadares.add(new RadarSpots());
+                break;
+        }
+    }
+
+    public void setBalasLong(int valor) {
+        if (valor < 0) {
+            removerBalasLong(valor);
+        for (int i = 0; i < valor; i++) {
+            agregarBalaLong();
+        }
+    }
+
+}
+
+    private void removerBalasLong(int valor) {
+        for (int i = 0; i < valor; i++) {
+            for (Bala bala : inventarioBalasCanon) {
+                if (bala.getTipoBala() == BalaTipo.LONGG) {
+                    inventarioBalasCanon.remove(bala);
+                    break;
+                }
+            }
+        }
+    }
+    public void setBalasHeavy(int valor) {
+        if (valor < 0) {
+            removerBalasHeavy(valor);
+        }
+        for (int i = 0; i < valor; i++) {
+            agregarBalaHeavy();
+        }
+    }
+
+    private void removerBalasHeavy(int valor) {
+        for (int i = 0; i < valor; i++) {
+            for (Bala bala : inventarioBalasCanon) {
+                if (bala.getTipoBala() == BalaTipo.HEAVY) {
+                    inventarioBalasCanon.remove(bala);
+                    break;
+                }
+            }
+        }
+    }
+    public void setBalasMine(int valor) {
+        if (valor < 0) {
+            removerBalasMine(valor);
+        }
+        for (int i = 0; i < valor; i++) {
+            agregarBalaMine();
+        }
+    }
+    private void removerBalasMine(int valor) {
+        for (int i = 0; i < valor; i++) {
+            for (Bala bala : inventarioBalasCanon) {
+                if (bala.getTipoBala() == BalaTipo.MINE) {
+                    inventarioBalasCanon.remove(bala);
+                    break;
+                }
+            }
+        }
+    }
+
+    public int getRadarLong() {
+        int contador = 0;
+        for (Radar radar : inventarioRadares) {
+            if (radar.getTipoRadar() == RadarTipo.LONG) {
+                contador++;
+            }
+        }
+       return contador;
+    }
+
+    public int getRadarShort() {
+        int contador = 0;
+        for (Radar radar : inventarioRadares) {
+            if (radar.getTipoRadar() == RadarTipo.SHORT) {
+                contador++;
+            }
+        }
+        return contador;
+    }
+
+    public int getRadarSpots() {
+        int contador = 0;
+        for (Radar radar : inventarioRadares) {
+            if (radar.getTipoRadar() == RadarTipo.SPOTS) {
+                contador++;
+            }
+        }
+        return contador;
     }
 }

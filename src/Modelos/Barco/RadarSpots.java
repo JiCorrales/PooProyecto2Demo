@@ -3,11 +3,11 @@ package Modelos.Barco;
 import java.io.Serializable;
 
 public class RadarSpots implements Radar, Serializable {
-    private String tipoRadar = "Spots";
+    private RadarTipo tipoRadar = RadarTipo.SPOTS;
     private int turnosRestantes = 3;
     private int radioDisponible = 3;
 
-    public String getTipoRadar() {
+    public RadarTipo getTipoRadar() {
         return tipoRadar;
     }
     public int getTurnosRestantes() {
@@ -20,5 +20,9 @@ public class RadarSpots implements Radar, Serializable {
     public void usarRadar() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'usarRadar'");
+    }
+    @Override
+    public String toString() {
+        return "SPOTS";
     }
 }

@@ -6,6 +6,7 @@ import javax.swing.Icon;
 
 import Cliente.Cliente;
 import Modelos.Barco.BalaTipo;
+import Modelos.Barco.RadarTipo;
 import Modelos.Mensaje;
 import Modelos.Tablero.*;
 import javax.swing.*;
@@ -332,19 +333,22 @@ public class InterfazCliente {
     // la interfaz del cliente con la cantidad de balas que tiene de ese tipo
     public void setBalas(int valor, BalaTipo tipo) {
         switch (tipo) {
-            case LONG:
+            case LONGG:
+                cliente.getBarco().setBalasLong(valor);
                 setBalasLong(cliente.getBarco().getBalasLong() + valor);
                 break;
             case HEAVY:
+                cliente.getBarco().setBalasHeavy(valor);
                 setBalasHeavy(cliente.getBarco().getBalasHeavy() + valor);
                 break;
             case MINE:
+                cliente.getBarco().setBalasMine(valor);
                 setBalasMine(cliente.getBarco().getBalasMine() + valor);
                 break;
         }
     }
     public void setBalasLong(int valor){
-        lblBalasLong.setText("Balas Long: " + valor);
+        lblBalasLong.setText("Balas Long: " + cliente.getBarco().getBalasLong());
         lblBalasLong.setForeground(Color.WHITE);
         lblBalasLong.setFont(new Font("Arial", Font.BOLD, 14));
         ImageIcon balaIcono = new ImageIcon("src\\Modelos\\Barco\\balaLong.png");
@@ -371,6 +375,51 @@ public class InterfazCliente {
         Image balaImage = balaIcono.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         lblBalasMine.setIcon(new ImageIcon(balaImage));
         agregarPanelInformacion(lblBalasMine, 10, 400);
+//
+    }
+
+    public void setRadar(int valor, RadarTipo tipo){
+        switch (tipo) {
+            case SHORT:
+
+                setRadarShort(cliente.getBarco().getRadar(RadarTipo.SHORT) + valor);
+                break;
+            case LONG:
+                setRadarLong(cliente.getBarco().getRadar(RadarTipo.LONG) + valor);
+                break;
+            case SPOTS:
+                setRadarSpots(cliente.getBarco().getRadar(RadarTipo.SPOTS) + valor);
+                break;
+        }
+    }
+    public void setRadarLong(int valor){
+        lblRadarLargo.setText("Radar Long: " + cliente.getBarco().getRadar(RadarTipo.LONG));
+        lblRadarLargo.setForeground(Color.WHITE);
+        lblRadarLargo.setFont(new Font("Arial", Font.BOLD, 14));
+        ImageIcon radarIcono = new ImageIcon("src\\Modelos\\Barco\\radarLong.png");
+        Image radarImage = radarIcono.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        lblRadarLargo.setIcon(new ImageIcon(radarImage));
+        agregarPanelInformacion(lblRadarLargo, 10, 460);
+
+    }
+    public void setRadarShort(int valor){
+        lblRadarCorto.setText("Radar Short: " + cliente.getBarco().getRadar(RadarTipo.SHORT));
+        lblRadarCorto.setForeground(Color.WHITE);
+        lblRadarCorto.setFont(new Font("Arial", Font.BOLD, 14));
+        ImageIcon radarIcono = new ImageIcon("src\\Modelos\\Barco\\radarShort.png");
+        Image radarImage = radarIcono.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        lblRadarCorto.setIcon(new ImageIcon(radarImage));
+        agregarPanelInformacion(lblRadarCorto, 10, 430);
+    }
+    public void setRadarSpots(int valor){
+        lblRadarMedio.setText("Radar Spots: " + cliente.getBarco().getRadar(RadarTipo.SPOTS));
+        lblRadarMedio.setForeground(Color.WHITE);
+        lblRadarMedio.setFont(new Font("Arial", Font.BOLD, 14));
+        ImageIcon radarIcono = new ImageIcon("src\\Modelos\\Barco\\radarSpots.png");
+        Image radarImage = radarIcono.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        lblRadarMedio.setIcon(new ImageIcon(radarImage));
+        agregarPanelInformacion(lblRadarMedio, 10, 490);
+
     }
 
     public void mostrarMercado() {
@@ -396,10 +445,9 @@ public class InterfazCliente {
         // Reset grid width
         gbc.gridwidth = 1;
 
-        // Display products and their prices
-        ArrayList<BalaTipo> productos = new ArrayList<>(Arrays.asList(BalaTipo.LONG, BalaTipo.HEAVY, BalaTipo.MINE));
-        String[] productosStrings = {BalaTipo.LONG.toString(), BalaTipo.HEAVY.toString(),
-                              BalaTipo.MINE.toString(), "Radar Corto", "Radar Medio", "Radar Largo"};
+
+        String[] productosStrings = {BalaTipo.LONGG.toString(), BalaTipo.HEAVY.toString(),
+                              BalaTipo.MINE.toString(), RadarTipo.SHORT.toString(), RadarTipo.LONG.toString(), RadarTipo.SPOTS.toString()};
         int[] precios = {100, 200, 300, 400, 500, 600}; // Example prices
 
         for (int i = 0; i < productosStrings.length; i++) {
@@ -431,7 +479,7 @@ public class InterfazCliente {
             if (cliente.getBarco().getOroDisponible() >= precio) {
                 cliente.getBarco().setOroDisponible(cliente.getBarco().getOroDisponible() - precio);
                 setOro(cliente.getBarco().getOroDisponible());
-                if (comprarButton.getText().equals("Comprar "+ BalaTipo.LONG.toString())){
+                if (comprarButton.getText().equals("Comprar "+ BalaTipo.LONGG.toString())){
                     cliente.getBarco().agregarBalaLong();
                     setBalasLong(cliente.getBarco().getBalasLong());
                     System.out.println(cliente.getBarco().getBalasLong());
@@ -441,17 +489,16 @@ public class InterfazCliente {
                 } else if (comprarButton.getText().equals("Comprar "+ BalaTipo.MINE.toString())) {
                     cliente.getBarco().agregarBalaMine();
                     setBalasMine(cliente.getBarco().getBalasMine());
+                } else if (comprarButton.getText().equals("Comprar "+ RadarTipo.SHORT.toString())){
+                    cliente.getBarco().agregarRadar(RadarTipo.SHORT);
+                    setRadarShort(cliente.getBarco().getRadarShort());
+                } else if (comprarButton.getText().equals("Comprar "+ RadarTipo.LONG.toString())){
+                    cliente.getBarco().agregarRadar(RadarTipo.LONG);
+                    setRadarLong(cliente.getBarco().getRadarLong());
+                } else if (comprarButton.getText().equals("Comprar "+ RadarTipo.SPOTS.toString())){
+                    cliente.getBarco().agregarRadar(RadarTipo.SPOTS);
+                    setRadarSpots(cliente.getBarco().getRadarSpots());
                 }
-//                } else if (comprarButton.getText().equals("Comprar Radar Corto")){
-//                    cliente.getBarco().getInventarioRadares().add("Radar Corto");
-//                    setInventarioRadares(cliente.getBarco().getInventarioRadares());
-//                } else if (comprarButton.getText().equals("Comprar Radar Medio")){
-//                    cliente.getBarco().getInventarioRadares().add("Radar Medio");
-//                    setInventarioRadares(cliente.getBarco().getInventarioRadares());
-//                } else if (comprarButton.getText().equals("Comprar Radar Largo")){
-//                    cliente.getBarco().getInventarioRadares().add("Radar Largo");
-//                    setInventarioRadares(cliente.getBarco().getInventarioRadares());
-//                }
             } else {
                 JOptionPane.showMessageDialog(mercadoFrame, "No tienes suficiente oro para comprar " + producto, "Mercado", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -530,6 +577,9 @@ public class InterfazCliente {
     public void atacar (int x, int y, BalaTipo balaTipo){
         System.out.println("Atacando a la celda [" + x + ", " + y + "] con la bala " + balaTipo);
      }
+    public void usarRadar(int x, int y, RadarTipo radarTipo){
+        System.out.println("Usando radar en la celda [" + x + ", " + y + "] con el radar " + radarTipo);
+    }
     private JButton btnUseBala = new JButton("Usar Bala");
     private JButton btnUseRadar = new JButton("Usar Radar");
     private void crearCombox() {
@@ -539,7 +589,7 @@ public class InterfazCliente {
         JComboBox<String> comboBala = new JComboBox<>(tiposBala);
 
         // Crear JComboBox para seleccionar el tipo de radar
-        String[] tiposRadar = {"Radar Corto", "Radar Medio", "Radar Largo"};
+        String[] tiposRadar = {"Radar Short", "Radar Long", "Radar Spots"};
         JComboBox<String> comboRadar = new JComboBox<>(tiposRadar);
 
         // Panel para los JComboBox
@@ -559,6 +609,7 @@ public class InterfazCliente {
                 assert balaSeleccionada != null;
                 BalaTipo balaTipo = obtenerBalaTipo(balaSeleccionada);
                 atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
+
                 setBalas(-1, balaTipo);
             } else if (cliente.getBarco().getBalasHeavy() > 0){
                 String balaSeleccionada = (String) comboBala.getSelectedItem();
@@ -573,7 +624,30 @@ public class InterfazCliente {
                 atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
                 setBalas(-1, balaTipo);
             }
-
+        });
+            btnUseRadar.addActionListener(e -> {
+                if (cliente.getBarco().getRadar(RadarTipo.SHORT) == 0 && cliente.getBarco().getRadar(RadarTipo.LONG) == 0 && cliente.getBarco().getRadar(RadarTipo.SPOTS) == 0) {
+                    JOptionPane.showMessageDialog(pantallaCliente, "No tienes radares disponibles", "Usar Radar", JOptionPane.INFORMATION_MESSAGE);
+                } else if (cliente.getBarco().getRadar(RadarTipo.SHORT) > 0){
+                    String radarSeleccionado = (String) comboRadar.getSelectedItem();
+                    assert radarSeleccionado != null;
+                    RadarTipo radarTipo = obtenerRadarTipo(radarSeleccionado);
+                    usarRadar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), radarTipo);
+                    setRadar(-1, radarTipo);
+                } else if (cliente.getBarco().getRadar(RadarTipo.LONG) > 0){
+                    String radarSeleccionado = (String) comboRadar.getSelectedItem();
+                    assert radarSeleccionado != null;
+                    RadarTipo radarTipo = obtenerRadarTipo(radarSeleccionado);
+                    usarRadar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), radarTipo);
+                    setRadar(-1, radarTipo);
+                } else if (cliente.getBarco().getRadar(RadarTipo.SPOTS) > 0){
+                    String radarSeleccionado = (String) comboRadar.getSelectedItem();
+                    assert radarSeleccionado != null;
+                    RadarTipo radarTipo = obtenerRadarTipo(radarSeleccionado);
+                    usarRadar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), radarTipo);
+                    setRadar(-1, radarTipo);
+                }
+            });
 //
 //                String balaSeleccionada = (String) comboBala.getSelectedItem();
 //                assert balaSeleccionada != null;
@@ -581,7 +655,7 @@ public class InterfazCliente {
 //                atacar(cliente.getBarco().getPosicionX(), cliente.getBarco().getPosicionY(), balaTipo);
 //                setBalas(-1, balaTipo);
 
-        });
+
         // Panel para el botón de atacar
         JPanel panelBoton = new JPanel();
         panelBoton.setLayout(new BorderLayout());
@@ -601,7 +675,7 @@ public class InterfazCliente {
         // Aquí debes implementar la lógica para convertir el string a tu enumeración o clase BalaTipo
         switch (balaSeleccionada) {
             case "Bala Long":
-                return BalaTipo.LONG;
+                return BalaTipo.LONGG;
             case "Bala Heavy":
                 return BalaTipo.HEAVY;
             case "Bala Mine":
@@ -610,7 +684,19 @@ public class InterfazCliente {
                 throw new IllegalArgumentException("Tipo de bala desconocido: " + balaSeleccionada);
         }
     }
-
+    private RadarTipo obtenerRadarTipo(String radarSeleccionado) {
+        // Aquí debes implementar la lógica para convertir el string a tu enumeración o clase BalaTipo
+        switch (radarSeleccionado) {
+            case "Radar Short":
+                return RadarTipo.SHORT;
+            case "Radar Long":
+                return RadarTipo.LONG;
+            case "Radar Spots":
+                return RadarTipo.SPOTS;
+            default:
+                throw new IllegalArgumentException("Tipo de radar desconocido: " + radarSeleccionado);
+        }
+    }
     public void crearBotonesMovimiento() {
         final int[] turnosRestantes = {3};
 
